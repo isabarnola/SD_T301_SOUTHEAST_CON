@@ -15,8 +15,8 @@
 // H BRIDGE 
 // ================================================================
 
-#define motor_speed 100 // MAX = 255
-#define turn_speed  85
+#define motor_speed 80 // MAX = 255
+#define turn_speed  80
 #define BLACK 150
  
 int turn_delay = 10;
@@ -24,14 +24,14 @@ int turn_delay = 10;
 //-----------------------
 // Motor : Right
 //-----------------------
-int R_ME  = 3;   //Enable Pin of the Right Motor (must be PWM)
-int R_R_M1 = 1;    //Control Pin
+int R_ME  = 4;   //Enable Pin of the Right Motor (must be PWM)
+int R_M1 = 50;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
 int L_ME  = 6;   //Enable Pin of the Left Motor (must be PWM)
-int L_R_M1 = 4;
+int L_M1 = 51;
 
 
 // ================================================================
@@ -173,9 +173,9 @@ void loop()
   // STOP
   if(right_sensor_state < BLACK && left_sensor_state < BLACK)
   { 
-     Serial.println("going forward");
-     stopp();
-    
+     Serial.println("going stop");
+     //stopp();
+    advance(motor_speed,motor_speed);
   }
   
 
