@@ -16,18 +16,18 @@
 // ================================================================
 
 #define motor_speed 100 // MAX = 255
-int motor_speed1  = 100;// MAX = 255
-int motor_speed2 =100; // MAX = 255
+int motor_speed_R  = 100;// MAX = 255
+int motor_speed_L =100; // MAX = 255
 #define turn_speed  85
 #define BLACK 150
 volatile int counter_R = 0;
 volatile int counter_L = 0;
 int turn_delay = 10;
 
-int M_E_R1 = 30;
-int M_E_R2 = 31;
-int M_E_L1 = 29;
-int M_E_L2 = 28;
+int ENC_RA = 30;
+int ENC_RB = 31;
+int ENC_LA = 29;
+int ENC_LB = 28;
 //-----------------------
 // Motor : Right
 //-----------------------
@@ -109,9 +109,9 @@ void ISR_countR()
 {
   //Serial.print(counter_R);
   //counter_R++;  // increment Motor A counter value
-  if (digitalRead(M_E_R1) == HIGH) 
+  if (digitalRead(ENC_RA) == HIGH) 
   {
-    if (digitalRead(M_E_R2) == LOW) 
+    if (digitalRead(ENC_RB) == LOW) 
     {
       counter_R++;
     } 
@@ -122,7 +122,7 @@ void ISR_countR()
   } 
   else
   {
-    if (digitalRead(M_E_R2) == LOW) 
+    if (digitalRead(ENC_RB) == LOW) 
     {
       counter_R--;
     } 
@@ -137,9 +137,9 @@ void ISR_countL()
 {
    //Serial.print(counter_L);
   //counter_L++;  // increment Motor B counter value
-  if (digitalRead(M_E_L1) == HIGH) 
+  if (digitalRead(ENC_LA) == HIGH) 
   {
-    if (digitalRead(M_E_L2) == LOW) 
+    if (digitalRead(ENC_LB) == LOW) 
     {
       counter_L++;
     } 
@@ -150,7 +150,7 @@ void ISR_countL()
   } 
   else
   {
-    if (digitalRead(M_E_L2) == LOW) 
+    if (digitalRead(ENC_LB) == LOW) 
     {
       counter_L--;
     } 
@@ -169,10 +169,10 @@ void setup()
 {
   // put your setup code here, to run once:
 
-pinMode(M_E_R1,INPUT);
-pinMode(M_E_R2,INPUT);
-pinMode(M_E_L1,INPUT);
-pinMode(M_E_L2,INPUT);
+pinMode(ENC_RA,INPUT);
+pinMode(ENC_RB,INPUT);
+pinMode(ENC_LA,INPUT);
+pinMode(ENC_LB,INPUT);
   
   //-----------------------
   // Motors
@@ -233,7 +233,7 @@ void loop()
   if(right_sensor_state < BLACK && left_sensor_state > BLACK)
   {
     Serial.println("turning right");
-    turn_R(motor_speed1,motor_speed2);
+    turn_R(motor_speed_R,motor_speed_L);
     
    }
 
@@ -242,7 +242,7 @@ void loop()
   if(right_sensor_state > BLACK && left_sensor_state < BLACK)
   {
     Serial.println("going left");
-    turn_L(motor_speed1,motor_speed2);
+    turn_L(motor_speed_R,motor_speed_L);
    
    }
 
@@ -250,20 +250,20 @@ void loop()
   if(right_sensor_state > BLACK && left_sensor_state > BLACK)
   {
     Serial.println("going forward");
-    advance(motor_speed1,motor_speed2);
+    advance(motor_speed_R,motor_speed_L);
     Serial.print("Right encoder: ");
     Serial.println(counter_R);
     Serial.print("left encoder: ");
     Serial.println(counter_L);
-    if (counter_L > counter_R && motor_speed1 > 90 && motor_speed2> 80)
+    if (counter_L > counter_R && motor_speed_R > 90 && motor_speed_L> 80)
     {
-      motor_speed2--;
+      motor_speed_L--;
       }
      
       Serial.print("Right speed:");
-      Serial.println( motor_speed1);
+      Serial.println( motor_speed_R);
        Serial.print("left speed:");
-      Serial.println(motor_speed2);
+      Serial.println(motor_speed_L);
       
       
    }
