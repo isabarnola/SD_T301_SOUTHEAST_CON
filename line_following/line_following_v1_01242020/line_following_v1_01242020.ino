@@ -16,22 +16,29 @@
 // ================================================================
 
 #define motor_speed 100 // MAX = 255
+int motor_speed1  = 100;// MAX = 255
+int motor_speed2 =100; // MAX = 255
 #define turn_speed  85
 #define BLACK 150
- 
+volatile int counter_R = 0;
+volatile int counter_L = 0;
 int turn_delay = 10;
 
+int M_E_R1 = 30;
+int M_E_R2 = 31;
+int M_E_L1 = 29;
+int M_E_L2 = 28;
 //-----------------------
 // Motor : Right
 //-----------------------
-int R_ME  = 3;   //Enable Pin of the Right Motor (must be PWM)
-int R_R_M1 = 1;    //Control Pin
+int R_ME  = 4;   //Enable Pin of the Right Motor (must be PWM)
+int R_M1 = 50;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
 int L_ME  = 6;   //Enable Pin of the Left Motor (must be PWM)
-int L_R_M1 = 4;
+int L_M1 = 51;
 
 
 // ================================================================
@@ -65,10 +72,15 @@ void stopp(void)                    //Stop
 }
 void advance(char a,char b)          //Move forward
 {
-  analogWrite (R_ME,a);      //PWM Speed Control
-  digitalWrite(R_M1,HIGH);
+  analogWrite (R_ME,a);             //PWM Speed Control
   analogWrite (L_ME,b);
+  digitalWrite(R_M1,HIGH);
   digitalWrite(L_M1,HIGH);
+  
+  //delay(2);                 //10KHz Frequency
+  digitalWrite(R_M1,LOW);
+  digitalWrite(L_M1,LOW);
+  //delay(5);                //10KHz Frequency
 }
 void back_off (char a,char b)          //Move backward
 {
@@ -92,6 +104,62 @@ void turn_R (char a,char b)             //Turn Right
   digitalWrite(L_M1,LOW);
 }
 
+// Motor A pulse count ISR
+void ISR_countR()  
+{
+  //Serial.print(counter_R);
+  //counter_R++;  // increment Motor A counter value
+  if (digitalRead(M_E_R1) == HIGH) 
+  {
+    if (digitalRead(M_E_R2) == LOW) 
+    {
+      counter_R++;
+    } 
+    else 
+    {
+      counter_R--;
+    }
+  } 
+  else
+  {
+    if (digitalRead(M_E_R2) == LOW) 
+    {
+      counter_R--;
+    } 
+    else 
+    {
+      counter_R++;
+    }
+} 
+}
+// Motor B pulse count ISR
+void ISR_countL()  
+{
+   //Serial.print(counter_L);
+  //counter_L++;  // increment Motor B counter value
+  if (digitalRead(M_E_L1) == HIGH) 
+  {
+    if (digitalRead(M_E_L2) == LOW) 
+    {
+      counter_L++;
+    } 
+    else 
+    {
+      counter_L--;
+    }
+  } 
+  else
+  {
+    if (digitalRead(M_E_L2) == LOW) 
+    {
+      counter_L--;
+    } 
+    else 
+    {
+      counter_L++;
+    }
+}
+}
 
 // ================================================================
 // Setup
@@ -100,6 +168,11 @@ void turn_R (char a,char b)             //Turn Right
 void setup() 
 {
   // put your setup code here, to run once:
+
+pinMode(M_E_R1,INPUT);
+pinMode(M_E_R2,INPUT);
+pinMode(M_E_L1,INPUT);
+pinMode(M_E_L2,INPUT);
   
   //-----------------------
   // Motors
@@ -123,6 +196,17 @@ void setup()
   // Left
   pinMode(left_sensor_pin,    INPUT);
   //pinMode(right_sensor_state, OUTPUT);
+
+  //----------------------
+  // Encoders
+  //----------------------
+
+  // Increase counter A when speed sensor pin goes High
+	attachInterrupt(0, ISR_countR, CHANGE);  
+  	 // Increase counter B when speed sensor pin goes High
+	attachInterrupt(1, ISR_countL, CHANGE); 
+
+
 
   // Sets the data rate in bits 
   // per second (baud) for serial data transmission.
@@ -149,7 +233,7 @@ void loop()
   if(right_sensor_state < BLACK && left_sensor_state > BLACK)
   {
     Serial.println("turning right");
-    turn_R(motor_speed,motor_speed);
+    turn_R(motor_speed1,motor_speed2);
     
    }
 
@@ -158,7 +242,7 @@ void loop()
   if(right_sensor_state > BLACK && left_sensor_state < BLACK)
   {
     Serial.println("going left");
-    turn_L(motor_speed,motor_speed);
+    turn_L(motor_speed1,motor_speed2);
    
    }
 
@@ -166,17 +250,31 @@ void loop()
   if(right_sensor_state > BLACK && left_sensor_state > BLACK)
   {
     Serial.println("going forward");
-    advance(motor_speed,motor_speed);
+    advance(motor_speed1,motor_speed2);
+    Serial.print("Right encoder: ");
+    Serial.println(counter_R);
+    Serial.print("left encoder: ");
+    Serial.println(counter_L);
+    if (counter_L > counter_R && motor_speed1 > 90 && motor_speed2> 80)
+    {
+      motor_speed2--;
+      }
+     
+      Serial.print("Right speed:");
+      Serial.println( motor_speed1);
+       Serial.print("left speed:");
+      Serial.println(motor_speed2);
+      
       
    }
    
   // STOP
   if(right_sensor_state < BLACK && left_sensor_state < BLACK)
   { 
-     Serial.println("going forward");
+     Serial.println("stop");
      stopp();
     
   }
-  
+  delay(500);
 
 }
