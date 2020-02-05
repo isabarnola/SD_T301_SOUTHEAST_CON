@@ -24,10 +24,10 @@ volatile int counter_R = 0;
 volatile int counter_L = 0;
 int turn_delay = 10;
 
-int ENC_RA = 30;
-int ENC_RB = 31;
-int ENC_LA = 29;
-int ENC_LB = 28;
+int ENC_RA = 34;
+int ENC_RB = 35;
+int ENC_LA = 30;
+int ENC_LB = 31;
 //-----------------------
 // Motor : Right
 //-----------------------
