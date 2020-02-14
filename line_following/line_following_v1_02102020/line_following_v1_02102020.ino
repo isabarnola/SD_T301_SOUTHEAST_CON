@@ -10,7 +10,7 @@
     EXAMPLE USES WHITE SURFACE AND BLACK LINES
     TEST CURRENT SET UP AND THEN CHANGE VALUES
 */
-
+#include "encoder.h"
 // ================================================================
 // H BRIDGE 
 // ================================================================
@@ -32,21 +32,23 @@ unsigned int old_counter_L = 0;
 float velR;
 float velL;
 int turn_delay = 10;
+/*
 int ENC_RA = 2;
 int ENC_RB = 35;
 int ENC_LA = 3;
 int ENC_LB = 31;
+*/
 //-----------------------
 // Motor : Right
 //-----------------------
-int R_ME  = 4;   //Enable Pin of the Right Motor (must be PWM)
-int R_M1 = 50;    //Control Pin
+int R_M_PWM  = 4;   //Enable Pin of the Right Motor (must be PWM)
+int R_M_E = 50;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
-int L_ME  = 6;   //Enable Pin of the Left Motor (must be PWM)
-int L_M1 = 51;
+int L_M_PWM  = 6;   //Enable Pin of the Left Motor (must be PWM)
+int L_M_E = 51;
 
 int dir = 0;
 int cnt = 0;
@@ -79,46 +81,46 @@ int right_sensor_state;
 
 void stopp(void)                    //Stop
 {
-  analogWrite(R_ME,0);
-  digitalWrite(R_M1,LOW);
-  analogWrite(L_ME,0);
-  digitalWrite(L_M1,LOW);
+  analogWrite(R_M_PWM,0);
+  digitalWrite(R_M_E,LOW);
+  analogWrite(L_M_PWM,0);
+  digitalWrite(L_M_E,LOW);
 }
 void advance(char a,char b)          //Move forward
 {
   
-  digitalWrite(L_M1,LOW);
+  digitalWrite(L_M_E,LOW);
    //delay(1);
-  digitalWrite(R_M1,LOW);
+  digitalWrite(R_M_E,LOW);
   // delay(1);
-  analogWrite (L_ME,a);  //PWM Speed Control
+  analogWrite (L_M_PWM,a);  //PWM Speed Control
     //delay(1);
-  analogWrite (R_ME,b);
+  analogWrite (R_M_PWM,b);
   delay(1);
   
 }
 void back_off (char a,char b)          //Move backward
 {
-  analogWrite (R_ME,a);
-  digitalWrite(R_M1,HIGH);
-  analogWrite (L_ME,b);
-  digitalWrite(L_M1,HIGH);
+  analogWrite (R_M_PWM,a);
+  digitalWrite(R_M_E,HIGH);
+  analogWrite (L_M_PWM,b);
+  digitalWrite(L_M_E,HIGH);
 }
 void turn_L (char a,char b)             //Turn Left
 {
-  analogWrite (R_ME,a);
-  digitalWrite(R_M1,HIGH);
-  analogWrite (L_ME,b);
-  digitalWrite(L_M1,LOW);
+  analogWrite (R_M_PWM,a);
+  digitalWrite(R_M_E,HIGH);
+  analogWrite (L_M_PWM,b);
+  digitalWrite(L_M_E,LOW);
 }
 void turn_R (char a,char b)             //Turn Right
 {
-  analogWrite (R_ME,a);
-  digitalWrite(R_M1,LOW);
-  analogWrite (L_ME,b);
-  digitalWrite(L_M1,HIGH);
+  analogWrite (R_M_PWM,a);
+  digitalWrite(R_M_E,LOW);
+  analogWrite (L_M_PWM,b);
+  digitalWrite(L_M_E,HIGH);
 }
-
+/*
 // Motor A pulse count ISR
 void ISR_countR()  
 {
@@ -150,7 +152,7 @@ void ISR_countL()
    
   }
 }
-
+*/
 // ================================================================
 // Setup
 // ================================================================
@@ -158,21 +160,21 @@ void ISR_countL()
 void setup() 
 {
   // put your setup code here, to run once:
-
+/*
 pinMode(ENC_RA,INPUT);
 pinMode(ENC_RB,INPUT);
 pinMode(ENC_LA,INPUT);
 pinMode(ENC_LB,INPUT);
- 
+ */
   //-----------------------
   // Motors
   //-----------------------
 
   // Right
-  pinMode(R_M1, OUTPUT);
+  pinMode(R_M_E, OUTPUT);
 
   // Left
-  pinMode(L_M1, OUTPUT);
+  pinMode(L_M_E, OUTPUT);
 
 
   //-----------------------
@@ -192,7 +194,7 @@ pinMode(ENC_LB,INPUT);
   //----------------------
 
   // Increase counter A when speed sensor pin goes High
-	attachInterrupt(0, ISR_countR, CHANGE);  
+	//attachInterrupt(0, ISR_countR, CHANGE);  
   	 // Increase counter B when speed sensor pin goes High
 	//attachInterrupt(1, ISR_countL, CHANGE); 
 
@@ -205,6 +207,7 @@ pinMode(ENC_LB,INPUT);
 
   // Sets the data rate in bits 
   // per second (baud) for serial data transmission.
+  encoder_init();
   Serial.begin(9600); 
 
 }
@@ -213,20 +216,24 @@ void loop()
 {
   
   
-  
+  /*
   Serial.println("================ NEW CODE 628 ================");
   Serial.print("previosmillis ");
   Serial.println(previousMillis);
   Serial.print("currentMillis ");
   currentMillis= millis();
   Serial.println(currentMillis);
+  */
   //-----------------------
   // IR Sensors: READ
   //-----------------------
   left_sensor_state =  analogRead(left_sensor_pin);
   right_sensor_state = analogRead(right_sensor_pin);
 
-
+   Serial.print("===================counL: ");
+    Serial.println(encoder1_val);
+    Serial.print("=====================counR: ");
+    Serial.println(encoder0_val);
    //-----------------------
   // Navigation
   //-----------------------
@@ -262,11 +269,8 @@ void loop()
     Serial.println("going forward");
     advance(motor_speed_R,motor_speed_L);
 
-      Serial.print("===================counL: ");
-    Serial.println(counter_L);
-    Serial.print("=====================counR: ");
-    Serial.println(counter_R);
-  
+   
+  /*
     velR = counter_R /(currentMillis - previousMillis);
     velL = counter_L /(currentMillis - previousMillis);
     
@@ -302,7 +306,7 @@ void loop()
         
     
      
-  
+  */
    
   }
   // STOP
