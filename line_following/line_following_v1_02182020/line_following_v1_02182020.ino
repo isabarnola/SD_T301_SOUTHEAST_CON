@@ -18,14 +18,14 @@
 #define ENCODEROUTPUT 4741.44
 #define MIN 80
 #define motor_speed 100 // MAX = 255
-int motor_speed_R  = 105;//95;//85;// MAX = 255
-int motor_speed_L =115;//105;//95; // MAX = 255
-#define turn_speed  85
-#define BLACK 150
-#define L_Forward HIGH
-#define R_Forward LOW
-#define L_Backward LOW
-#define R_Backward HIGH
+int motor_speed_R  = 100;//95;//85;// MAX = 255
+int motor_speed_L =79;//105;//95; // MAX = 255
+#define turn_speed  75
+#define BLACK 330
+#define L_Forward LOW
+#define R_Forward HIGH
+#define L_Backward HIGH
+#define R_Backward LOW
 volatile float counter_R = 0;
 volatile float counter_L = 0;
 unsigned int tempR;
@@ -44,14 +44,14 @@ int ENC_LB = 31;
 //-----------------------
 // Motor : Right
 //-----------------------
-int R_ME  = 4;   //Enable Pin of the Right Motor (must be PWM)
-int R_M1 = 50;    //Control Pin
+int R_ME  = 6;   //Enable Pin of the Right Motor (must be PWM)
+int R_M1 = 51;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
-int L_ME  = 6;   //Enable Pin of the Left Motor (must be PWM)
-int L_M1 = 51;
+int L_ME  = 4;   //Enable Pin of the Left Motor (must be PWM)
+int L_M1 = 50;
 
 int dir = 0;
 int cnt = 0;
@@ -78,6 +78,19 @@ int left_sensor_state;
 const int right_sensor_pin = A1;
 int right_sensor_state;
 
+//-----------------------
+// Sensor: Right
+//-----------------------
+const int right2_sensor_pin = A2;
+int right2_sensor_state;
+
+//-----------------------
+// Sensor: Left
+//-----------------------
+
+const int left2_sensor_pin  = A3;
+int left2_sensor_state;
+
 // ================================================================
 // Function
 // ================================================================
@@ -102,6 +115,14 @@ void advance(char a,char b)          //Move forward
   delay(1);
   
 }
+void read_ir()
+{
+  left_sensor_state   =  analogRead(left_sensor_pin);
+  right_sensor_state  = analogRead(right_sensor_pin);
+  left2_sensor_state  =  analogRead(left2_sensor_pin);
+  right2_sensor_state = analogRead(right2_sensor_pin);
+   
+}
 void back_off (char a,char b)          //Move backward
 {
   analogWrite (R_ME,a);
@@ -116,10 +137,24 @@ void turn_L (char a,char b)             //Turn Left
   analogWrite (L_ME,b);
   digitalWrite(L_M1,L_Backward);
 }
+void turn_L_line (char a)             //Turn Left
+{
+  analogWrite (R_ME,a);
+  digitalWrite(R_M1,R_Forward);
+  analogWrite (L_ME,0);
+  digitalWrite(L_M1,LOW);
+}
 void turn_R (char a,char b)             //Turn Right
 {
   analogWrite (R_ME,a);
   digitalWrite(R_M1,R_Backward);
+  analogWrite (L_ME,b);
+  digitalWrite(L_M1,L_Forward);
+}
+void turn_R_line (char b)             //Turn Right
+{
+  analogWrite (R_ME,0);
+  digitalWrite(R_M1,LOW);
   analogWrite (L_ME,b);
   digitalWrite(L_M1,L_Forward);
 }
@@ -159,30 +194,40 @@ void ISR_IR()
 {
   left_sensor_state =  analogRead(left_sensor_pin);
   right_sensor_state = analogRead(right_sensor_pin);
+  
   }
 int count = 0;
 void line_following(int n)
 {
   int white_lines = 0;
   // RIGHT
+  //      ||||   
+  //    L |||R
+  //      ||||
   //(right_sensor_state==HIGH && left_sensor_state==LOW)
   if(right_sensor_state < BLACK && left_sensor_state > BLACK)
   {
     Serial.println("turning right");
-    turn_L(motor_speed_R,motor_speed_L);
+    turn_L(turn_speed,turn_speed);
     
    }
 
   // LEFT
+  //      ||||   
+  //      L||| R
+  //      ||||
   //(right_sensor_state==LOW  && left_sensor_state==HIGH)
   if(right_sensor_state > BLACK && left_sensor_state < BLACK)
   {
     Serial.println("going left");
-    turn_R(motor_speed_R,motor_speed_L);
+    turn_L(turn_speed,turn_speed);
    
    }
 
   // FORWARD
+  //      ||||   
+  //     L||||R
+  //      ||||
   if(right_sensor_state > BLACK && left_sensor_state > BLACK)
   
   {
@@ -239,6 +284,9 @@ void line_following(int n)
    
   }
   // STOP
+  //    |||||||||   
+  //    ||L||||R|
+  //      ||||
   if(right_sensor_state < BLACK && left_sensor_state < BLACK)
   { 
      if (white_lines == n)
@@ -346,8 +394,8 @@ pinMode(ENC_LB,INPUT);
   //----------------------
 
   // Increase counter A when speed sensor pin goes High
-	attachInterrupt(0, ISR_countR, CHANGE);  
-  attachInterrupt(digitalPinToInterrupt(2),ISR_IR, CHANGE);
+	attachInterrupt(20, ISR_countR, CHANGE);  
+  //attachInterrupt(21,ISR_IR, CHANGE);
   	 // Increase counter B when speed sensor pin goes High
 	//attachInterrupt(1, ISR_countL, CHANGE); 
 
@@ -371,16 +419,25 @@ void loop()
 {
   
   
-  
+  /*
   Serial.println("================ NEW CODE 628 ================");
   Serial.print("previosmillis ");
   Serial.println(previousMillis);
   Serial.print("currentMillis ");
+  */
   currentMillis= millis();
-  Serial.println(currentMillis);
+ // Serial.println(currentMillis);
   //-----------------------
   // IR Sensors: READ
   //-----------------------
+   read_ir();
+   Serial.print(left_sensor_state);
+   Serial.print("\t");
+   Serial.print(left2_sensor_state);
+   Serial.print("\t");
+   Serial.print(right2_sensor_state);
+   Serial.print("\t");
+   Serial.println(right_sensor_state);
   
   
   
@@ -389,27 +446,115 @@ Serial.println(count);
    //-----------------------
   // Navigation
   //-----------------------
-   
+
+  
   // RIGHT
+  //      ||||   
+  //    L2||2R
+  //      ||||
   //(right_sensor_state==HIGH && left_sensor_state==LOW)
-  if(right_sensor_state < BLACK && left_sensor_state > BLACK)
+  
+  if(right_sensor_state > BLACK  && right2_sensor_state > BLACK && left_sensor_state < BLACK ||
+     left_sensor_state < BLACK && left2_sensor_state < BLACK && right_sensor_state > BLACK )
   {
     Serial.println("turning right");
-    turn_R(motor_speed_R,motor_speed_L);
+    turn_R_line(turn_speed);
     
    }
 
   // LEFT
+   //     ||||   
+  //      L2||2R
+  //      ||||
   //(right_sensor_state==LOW  && left_sensor_state==HIGH)
-  if(right_sensor_state > BLACK && left_sensor_state < BLACK)
+  if(right_sensor_state < BLACK && right2_sensor_state < BLACK && left_sensor_state > BLACK ||
+     left_sensor_state > BLACK && left2_sensor_state > BLACK && right_sensor_state < BLACK)
   {
     Serial.println("going left");
-    turn_L(motor_speed_R,motor_speed_L);
+    turn_L_line(turn_speed);
    
    }
 
+  
+  // STOP
+  if(right_sensor_state < BLACK && left_sensor_state < BLACK && left2_sensor_state < BLACK ||
+    right_sensor_state < BLACK && right_sensor_state < BLACK && left_sensor_state < BLACK  ||
+    right_sensor_state < BLACK && right2_sensor_state < BLACK && left2_sensor_state < BLACK||
+    right2_sensor_state < BLACK && left2_sensor_state < BLACK && left_sensor_state < BLACK  )
+  { 
+     if (white_lines == n)
+     {
+        Serial.println("stop");
+        stopp();
+     }
+     else
+     {
+      while(right_sensor_state < BLACK && left_sensor_state < BLACK)
+      {
+          read_ir();
+         Serial.print("|||||||||||||||| PASSING WHITE||||||||||||||||||  ");
+         Serial.println(white_lines);
+        advance(motor_speed_R,motor_speed_L);
+        Serial.print("=====================================================right_sensor_state ");
+        Serial.println(right_sensor_state);
+        Serial.print("=====================================================left_sensor_state");
+        Serial.println(left_sensor_state);
+
+     /* Serial.print("===================counL: ");
+    Serial.println(counter_L);
+    Serial.print("=====================counR: ");
+    Serial.println(counter_R);
+    */
+  
+    velR = counter_R /(currentMillis - previousMillis);
+    velL = counter_L /(currentMillis - previousMillis);
+    /*
+    Serial.print("===============================velR: ");
+    Serial.println(velR);
+    Serial.print("===============================velL: ");
+    Serial.println(velL);
+    */
+
+      if (velR > velL && motor_speed_R > MIN && motor_speed_L> MIN)
+      {
+         motor_speed_L--;
+        //Serial.println("--------------------changing left");
+        
+       
+      }
+      else if (velL >  velR && motor_speed_R > MIN && motor_speed_L> MIN)
+      {
+       motor_speed_R--;
+        //Serial.println("--------------------changing right");
+        
+      }
+      
+       /*
+        Serial.print("Right speed:");
+        Serial.println( motor_speed_R);
+         Serial.print("left speed:");
+        Serial.println(motor_speed_L);
+  */
+        cnt++;
+       
+        counter_R = 0;
+        counter_L = 0;
+        
+    
+     
+      }
+      white_lines++;
+      count++;
+      Serial.print("-------------------------------------lines passed: ");
+      Serial.println(white_lines);
+     }
+     
+    
+  }
+
+
   // FORWARD
-  if(right_sensor_state > BLACK && left_sensor_state > BLACK)
+  if(right2_sensor_state > BLACK && left2_sensor_state > BLACK)
   
   {
     if (dir != 1)
@@ -464,74 +609,6 @@ Serial.println(count);
   
    
   }
-  // STOP
-  if(right_sensor_state < BLACK && left_sensor_state < BLACK)
-  { 
-     if (white_lines == n)
-     {
-        Serial.println("stop");
-        stopp();
-     }
-     else
-     {
-      while(right_sensor_state < BLACK && left_sensor_state < BLACK)
-      {
-         Serial.print("|||||||||||||||| PASSING WHITE||||||||||||||||||  ");
-         Serial.println(white_lines);
-        advance(motor_speed_R,motor_speed_L);
-
-     /* Serial.print("===================counL: ");
-    Serial.println(counter_L);
-    Serial.print("=====================counR: ");
-    Serial.println(counter_R);
-    */
-  
-    velR = counter_R /(currentMillis - previousMillis);
-    velL = counter_L /(currentMillis - previousMillis);
-    /*
-    Serial.print("===============================velR: ");
-    Serial.println(velR);
-    Serial.print("===============================velL: ");
-    Serial.println(velL);
-    */
-
-      if (velR > velL && motor_speed_R > MIN && motor_speed_L> MIN)
-      {
-         motor_speed_L--;
-        //Serial.println("--------------------changing left");
-        
-       
-      }
-      else if (velL >  velR && motor_speed_R > MIN && motor_speed_L> MIN)
-      {
-       motor_speed_R--;
-        //Serial.println("--------------------changing right");
-        
-      }
-      
-       /*
-        Serial.print("Right speed:");
-        Serial.println( motor_speed_R);
-         Serial.print("left speed:");
-        Serial.println(motor_speed_L);
-  */
-        cnt++;
-       
-        counter_R = 0;
-        counter_L = 0;
-        
-    
-     
-      }
-      white_lines++;
-      count++;
-      Serial.print("-------------------------------------lines passed: ");
-      Serial.println(white_lines);
-     }
-     
-    
-  }
-  
    previousMillis = currentMillis;
   //delay(500);
 }
