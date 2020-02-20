@@ -1,5 +1,7 @@
 
-#include "encoder.h"
+#include "mrobot.h"
+int speed_L = 80;
+int speed_R = 60;
 
 //-----------------------
 // Motor : Right
@@ -16,7 +18,7 @@ int L_M_E = 51;
 void advance(char a,char b)          //Move forward
 {
   
-  digitalWrite(L_M_E,LOW);
+  digitalWrite(L_M_E,HIGH);
    //delay(1);
   digitalWrite(R_M_E,LOW);
   // delay(1);
@@ -45,13 +47,11 @@ void setup() {
      Serial.println("M0\t\t\tM1\t\t\t" );
 }
 
-int compute0(void)
-{
-  }
+
 
 void loop() {
 
-   advance(100,115);
+   advance(speed_R,speed_L);
    get_current_status();
     Serial.print("encoder0 " );
     Serial.print(encoder0_val);
@@ -67,6 +67,12 @@ void loop() {
     Serial.print(cur_wvel[0]);
     Serial.print("\tcur_wvel[1] " );
     Serial.println(cur_wvel[1]);
+
+    if (cur_wvel[1] > cur_wvel[0] )
+      speed_R--;
+    else if (cur_wvel[1] < cur_wvel[0])
+      speed_R++;
+    
 
     
     
