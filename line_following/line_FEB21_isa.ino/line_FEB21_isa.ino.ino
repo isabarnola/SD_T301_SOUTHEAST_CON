@@ -70,40 +70,31 @@ int interval = 1000;
 // ================================================================
 
 //-----------------------
+// Sensor: Left
+//-----------------------
+
+const int left_sensor_pin  = A1;
+int left_sensor_state;
+
+//-----------------------
 // Sensor: Right
 //-----------------------
 
-const int right_sensor_pin = 10; // ORANGE
+const int right_sensor_pin = A0;
 int right_sensor_state;
 
+//-----------------------
+// Sensor: Middle
+//-----------------------
+const int middle_sensor_pin = A2;
+int middle_sensor_state;
 
 //-----------------------
 // Sensor: Left
 //-----------------------
 
-const int left_sensor_pin  = 11; // BLUE
-int left_sensor_state;
-
-
-//-----------------------
-// Sensor: Middle
-//-----------------------
-const int middle_sensor_pin = 12; // WHITE
-int middle_sensor_state;
-
-//-----------------------
-// Sensor: Left arm
-//-----------------------
-
-const int left_arm_sensor_pin  = 13; // GREEN
-int left_arm_sensor_state;
-
-//-----------------------
-// Sensor: Right arm
-//-----------------------
-const int right_arm_sensor_pin = 9; // BLUE
-int right_arm_sensor_state;
-
+//const int left2_sensor_pin  = A3;
+//int left2_sensor_state;
 
 // ================================================================
 // Function
@@ -131,11 +122,10 @@ void advance(char a,char b)          //Move forward
 }
 void read_ir()
 {
-  left_sensor_state   =  digitalRead(left_sensor_pin);
-  right_sensor_state  = digitalRead(right_sensor_pin);
-  middle_sensor_state  =  digitalRead(middle_sensor_pin);
-  left_arm_sensor_state  =  digitalRead(left_arm_sensor_pin);
-  right_arm_sensor_state  =  digitalRead(right_arm_sensor_pin);
+  left_sensor_state   =  analogRead(left_sensor_pin);
+  right_sensor_state  = analogRead(right_sensor_pin);
+  middle_sensor_state  =  analogRead(middle_sensor_pin);
+  //right2_sensor_state = analogRead(right2_sensor_pin);
    
 }
 void back_off (char a,char b)          //Move backward
@@ -194,7 +184,7 @@ void turn_90_r(int right, int left, int time)
   analogWrite (L_ME,left);
   int TimeMillis = 0;
  
-  while(TimeMillis - time < 875)
+  while(TimeMillis - time < 1000)
    {                  //Time to turn towards bin
     Serial.println("---------------------Time to turn:  ");
     Serial.println(TimeMillis - time);
@@ -204,10 +194,9 @@ void turn_90_r(int right, int left, int time)
   }
   analogWrite (R_ME,0);
   analogWrite (L_ME, 0);
-  fix_turn_r_90_line();
 }
 
-void fix_turn_r_90_line()
+void turn_r_line()
 {
   read_ir();
   while(left_sensor_state != BLACK && middle_sensor_state != BLACK && left_sensor_state != BLACK)
@@ -247,10 +236,7 @@ pinMode(ENC_LB,INPUT);
   // IR Sensors
   //-----------------------
   pinMode(right_sensor_pin,   INPUT);  // Right
-  pinMode(left_sensor_pin,    INPUT);  // Left
-  pinMode(middle_sensor_pin,  INPUT);  // Middle
-  pinMode(left_arm_sensor_pin, INPUT); 
-  pinMode(right_arm_sensor_pin, INPUT);
+  pinMode(left_sensor_pin,    INPUT);   // Left
   
   //----------------------
   // Encoders
@@ -278,19 +264,10 @@ void loop()
   Serial.print("---------------------------------------------------------------White lines passed ");
   Serial.println(count);
   
- Serial.print(left_arm_sensor_state);
- Serial.print("\t");
- Serial.print(left_sensor_state);
- Serial.print("\t");
- Serial.print(middle_sensor_state);
- Serial.print("\t");
- Serial.print(right_sensor_state);
- Serial.print("\t");
- Serial.println(right_arm_sensor_state);
+ 
    
   if (count >= 0)
   {
-    //Serial.print("Navigation");
     //------------------------------------------
     // Navigation
     //------------------------------------------
@@ -353,7 +330,7 @@ void loop()
           { // opening else - stop & forward
             read_ir();
             // STOP
-            if(left_sensor_state == WHITE && middle_sensor_state == WHITE && right_sensor_state == WHITE)
+            if(right_sensor_state < THRESHOLD && middle_sensor_state < THRESHOLD && left_sensor_state < THRESHOLD)
             { // opening if - stop
               if (white_lines == n)
               { // opening if - stop
@@ -364,7 +341,7 @@ void loop()
               } // closing if - stop
               else
               { // opening else - pass white line
-                while(left_sensor_state == WHITE && middle_sensor_state == WHITE && right_sensor_state == WHITE) 
+                while(right_sensor_state < THRESHOLD && left_sensor_state < THRESHOLD && middle_sensor_state < THRESHOLD)
                 { // opening while loop - pass white line
                       read_ir();
                     Serial.print("|||||||||||||||| PASSING WHITE||||||||||||||||||  ");
@@ -378,13 +355,15 @@ void loop()
                
                 
                 count++;
+                Serial.print("-------------------------------------lines passed: ");
+                Serial.println(white_lines);
               } // close else - pass white line
             } // closing if - stop
             else
             { //opening else - froward
               read_ir();
               // FORWARD
-              if(left_sensor_state == BLACK && middle_sensor_state == WHITE && right_sensor_state == BLACK)  // ASK ISA 
+              if(right_sensor_state > THRESHOLD && left_sensor_state > THRESHOLD && middle_sensor_state)
               { // opening if - forward
                 Serial.println("going forward");
                 get_current_status();             // get velocity
@@ -403,66 +382,19 @@ void loop()
   else if (count == -1)
   {
     int TimeMillis = 0;
-    int TimeMillis2 = 0;
     int time = millis();
-    while(TimeMillis - time < 700)
+    while(TimeMillis - time < 250)
     {                  //Time to turn towards bin
-      Serial.println("---------------------backwardsn:  ");
+      Serial.println("---------------------Time to turn:  ");
       Serial.println(TimeMillis - time);
       back_off(speed_L,speed_R);
       TimeMillis = millis();
     }
-     
     turn_90_r(speed_R,speed_R, millis());
-    delay(1000); // delay to see turn
-    int time2 = millis();
-    Serial.println("Forward");
-    while( TimeMillis2 - time2 < 500)
-    {
-      Serial.println("eyeballing forward");
-      get_current_status();
-      go_straight();
-      advance(speed_R,speed_L); // move forward
-      
-      TimeMillis2 = millis();
-    }
-    Serial.println("sensors");
-    int exit = 0;
-    while (exit == 0)
-    {
-        read_ir();
-        if (left_arm_sensor_state == WHITE && right_arm_sensor_state == WHITE )
-        {
-          stopp();
-          exit = 1;
-        }
-         /* while( TimeMillis2 - time2 < 300)
-          {
-            get_current_status();
-            go_straight();
-            advance(speed_R,speed_L); // move forward
-            
-            TimeMillis2 = millis();
-          }*/
-          if (left_arm_sensor_state == WHITE && right_arm_sensor_state == BLACK)
-          {
-            Serial.print("left arm");
-            turn_R_line(turn_speed);
-          }
-          else if(left_arm_sensor_state == BLACK && right_arm_sensor_state == WHITE)
-          {
-            turn_L_line(turn_speed);      
-            
-          }
-    }
-    
     count = -3;
   }
-  
   else
-  {
     stopp();
-  }
 
     Serial.println(speed_L);
     Serial.print("\t");
