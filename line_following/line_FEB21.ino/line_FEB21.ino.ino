@@ -182,9 +182,9 @@ void turn_90_r(int right, int left, int time)
 {
   analogWrite (R_ME,right);
   analogWrite (L_ME,left);
-  //int TimeMillis = millis();
+  int TimeMillis = 0;
  
-  while(TimeMillis - time < 950)
+  while(TimeMillis - time < 1000)
    {                  //Time to turn towards bin
     Serial.println("---------------------Time to turn:  ");
     Serial.println(TimeMillis - time);
@@ -264,8 +264,9 @@ void loop()
   Serial.print("---------------------------------------------------------------White lines passed ");
   Serial.println(count);
   
-
-  if (white_lines != -1)
+ 
+   
+  if (count >= 0)
   {
     //------------------------------------------
     // Navigation
@@ -281,6 +282,7 @@ void loop()
     {
       Serial.println("turning right L(W) M(W) R(B) ");
       turn_L_line(turn_speed);
+      
     }
     else
     {  // opening else - right eft - left - stop - forward 
@@ -332,9 +334,10 @@ void loop()
             { // opening if - stop
               if (white_lines == n)
               { // opening if - stop
-                  Serial.println("stop");
+                  Serial.println("stop          =       =       =     =         =       =       =       =       =     =");
                   stopp();
-                  white_lines = -1;
+                  
+                  count = -1;
               } // closing if - stop
               else
               { // opening else - pass white line
@@ -344,13 +347,13 @@ void loop()
                     Serial.print("|||||||||||||||| PASSING WHITE||||||||||||||||||  ");
                     Serial.println(white_lines);
                     get_current_status();     // get velocity
-                    Serial.println(speed_L);
-                    Serial.print("\t");
-                    Serial.print(speed_R);
+                 
                     advance(speed_R,speed_L); // move forward
                     go_straight();            // correct velocity
                 } // closing while loop - pass white line
                 white_lines++;
+               
+                
                 count++;
                 Serial.print("-------------------------------------lines passed: ");
                 Serial.println(white_lines);
@@ -376,17 +379,25 @@ void loop()
       }// closing else - left - left - stop - forward
     }// closing else - right eft - left - stop - forward 
   }
-  else
+  else if (count == -1)
   {
     turn_90_r(speed_R,speed_R, millis());
+    count = -3;
   }
-  
+  else
+    stopp();
+
+
+     Serial.println(speed_L);
+    Serial.print("\t");
+    Serial.println(speed_R); 
     
    previousMillis = currentMillis;
   //delay(500);
 
-    Serial.print("\n\tcur_wvel[0] " );
+  /*  Serial.print("\n\tcur_wvel[0] " );
     Serial.print(cur_wvel[0]);
     Serial.print("\tcur_wvel[1] " );
     Serial.println(cur_wvel[1]);
+  */
 }

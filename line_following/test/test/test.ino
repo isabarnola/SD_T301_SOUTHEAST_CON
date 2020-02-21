@@ -29,6 +29,14 @@ void advance(char a,char b)          //Move forward
   
 }
 
+void go_straight()
+{
+   if (cur_wvel[1] > cur_wvel[0] )
+      speed_R--;
+    else if (cur_wvel[1] < cur_wvel[0])
+      speed_R++;
+}
+
 void setup() {
   // put your setup code here, to run once:
   //-----------------------
