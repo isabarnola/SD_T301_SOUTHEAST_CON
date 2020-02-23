@@ -333,7 +333,7 @@ void loop()
     if(right_sensor_state == WHITE      && middle_sensor_state == WHITE    && left_sensor_state == BLACK)
     {
       Serial.println("turning right L(W) M(W) R(B) ");
-      turn_R_line(turn_speed1);
+      turn_R_line(turn_speed);
       
     }
     else
@@ -362,7 +362,7 @@ void loop()
           if(left_sensor_state == WHITE     && middle_sensor_state == WHITE    && right_sensor_state == BLACK )
         {// opening if - go left
           Serial.println("going left");
-          turn_L_line(turn_speed1);
+          turn_L_line(turn_speed);
         }// close if - go left
         else
         { // opening else - left - stop - forward
