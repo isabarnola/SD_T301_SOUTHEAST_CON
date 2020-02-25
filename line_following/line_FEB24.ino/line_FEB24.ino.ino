@@ -259,6 +259,7 @@ void back_to_line()
       get_current_status();
       back_off(speed_L,speed_R);
       go_straight();
+      read_ir();
     }
 }
 
@@ -317,7 +318,7 @@ void loop()
    read_ir();
     
   Serial.print("---------------------------------------------------------------White lines passed ");
-  Serial.println(state);
+  Serial.println(white_lines);
   
  Serial.print(left_arm_sensor_state);
  Serial.print("\t");
@@ -418,7 +419,7 @@ void loop()
                 white_lines++;
                
                 
-                state++;
+               // state++;
               } // close else - pass white line
             } // closing if - stop
             else
@@ -501,7 +502,22 @@ void loop()
   } 
   else if (state == BACK)
   {
-      back_to_line();
+      Serial.println("back_to_line====================");
+      //back_to_line();
+        
+    read_ir();
+    while(left_sensor_state == BLACK && right_sensor_state == BLACK  )
+    { //Time to turn backwards bin
+      get_current_status();
+      back_off(speed_L,speed_R);
+      //go_straight();
+      read_ir();
+      
+    Serial.println(speed_L);
+    Serial.print("\t");
+    Serial.println(speed_R);
+    }
+      state = STOP;
   }
   else
   {
@@ -511,7 +527,9 @@ void loop()
     Serial.println(speed_L);
     Serial.print("\t");
     Serial.println(speed_R); 
-    
+
+    Serial.print("state");
+    Serial.println(state);
    previousMillis = currentMillis;
   //delay(500);
   /*  Serial.print("\n\tcur_wvel[0] " );
