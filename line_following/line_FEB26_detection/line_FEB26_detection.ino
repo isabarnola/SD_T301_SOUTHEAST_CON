@@ -306,6 +306,11 @@ void turn_90_l(int right, int left, int time)
   //fix_turn_l_90_line(right,left);
 }
 
+int line_following(int lines)
+{
+  
+  }
+
 void turn_left()
 {
   long int TimeMillis = 0;
