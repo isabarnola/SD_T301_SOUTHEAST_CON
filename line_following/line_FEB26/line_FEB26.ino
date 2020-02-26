@@ -114,6 +114,18 @@ int left_arm_sensor_state;
 const int right_arm_sensor_pin = 9; // BLUE
 int right_arm_sensor_state;
 
+//-----------------------
+// Sensor: FRONT Right 
+//-----------------------
+const int front_right_pin = 30;  // YELLOW
+int front_right_sensor_state;
+
+
+//-----------------------
+// Sensor: FRONT Right 
+//-----------------------
+const int front_left_pin = 31;  // GREEN
+int front_left_sensor_state;
 
 // ================================================================
 // Function
@@ -141,12 +153,13 @@ void advance(char a,char b)          //Move forward
 }
 void read_ir()
 {
-  left_sensor_state   =  digitalRead(left_sensor_pin);
-  right_sensor_state  = digitalRead(right_sensor_pin);
-  middle_sensor_state  =  digitalRead(middle_sensor_pin);
-  left_arm_sensor_state  =  digitalRead(left_arm_sensor_pin);
-  right_arm_sensor_state  =  digitalRead(right_arm_sensor_pin);
-   
+  left_sensor_state         =  digitalRead(left_sensor_pin);
+  right_sensor_state        =  digitalRead(right_sensor_pin);
+  middle_sensor_state       =  digitalRead(middle_sensor_pin);
+  left_arm_sensor_state     =  digitalRead(left_arm_sensor_pin);
+  right_arm_sensor_state    =  digitalRead(right_arm_sensor_pin);
+  front_right_sensor_state  =  digitalRead(front_right_pin);
+  front_left_sensor_state   =  digitalRead(front_left_pin);
 }
 void back_off (char a,char b)          //Move backward
 {
@@ -259,6 +272,7 @@ void turn_90_r(int right, int left, int time)
 void turn_90_l(int right, int left, int time)
 {
 
+
   analogWrite (R_ME,right);
   analogWrite (L_ME,left);
   int TimeMillis = 0;
@@ -273,6 +287,7 @@ void turn_90_l(int right, int left, int time)
   }
   analogWrite (R_ME,0);
   analogWrite (L_ME, 0);
+  
   fix_turn_l_90_line(right,left);
 }
 
