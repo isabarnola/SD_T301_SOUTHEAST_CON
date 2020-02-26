@@ -548,6 +548,15 @@ void loop()
     }
      
     turn_90_l(speed_R,speed_R, millis());
+     Serial.println("looking for line");
+    Serial.print(left_sensor_state);
+    Serial.print("\t");
+     Serial.print(middle_sensor_state);
+     Serial.print(right_sensor_state);
+        Serial.print("\t");
+       Serial.print(front_left_state);
+       Serial.print("\t");
+       Serial.println(front_right_state);
   delay(2000); // delay to see turn
      read_ir();
   while(left_sensor_state == BLACK && right_sensor_state == BLACK )
@@ -556,8 +565,12 @@ void loop()
     Serial.print(left_sensor_state);
     Serial.print("\t");
      Serial.print(middle_sensor_state);
-     Serial.println(right_sensor_state);
-     Serial.print("\t");
+     Serial.print(right_sensor_state);
+        Serial.print("\t");
+       Serial.print(front_left_state);
+       Serial.print("\t");
+       Serial.println(front_right_state);
+     
     get_current_status();
     advance(slow_R, slow_L);
     go_straight2(); 
@@ -574,7 +587,12 @@ void loop()
     Serial.print("\t");
      Serial.print(middle_sensor_state);
         Serial.print("\t");
-     Serial.println(right_sensor_state);
+     Serial.print(right_sensor_state);
+      Serial.print("\t");
+       Serial.print(front_left_state);
+       Serial.print("\t");
+       Serial.println(front_right_state);
+     
   
       //advance(slow_R+10, slow_L);
       turn_R_line(turn_speed);
@@ -596,7 +614,11 @@ void loop()
     Serial.print("\t");
      Serial.print(middle_sensor_state);
       Serial.print("\t");
-     Serial.println(right_sensor_state);
+     Serial.print(right_sensor_state);
+         Serial.print("\t");
+       Serial.print(front_left_state);
+       Serial.print("\t");
+       Serial.println(front_right_state);
     
       //advance(slow_R, slow_L+10);
       turn_L_line(turn_speed);
