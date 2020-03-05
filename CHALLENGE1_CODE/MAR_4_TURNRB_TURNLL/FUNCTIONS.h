@@ -643,7 +643,7 @@ void back_to_line()
    int r = speed_R;
    int l = speed_L;
    speed_R = speed_R -20;
-   speed_L = speed_L + 5;
+   speed_L = speed_L + 6;
     read_ir();
      while(left_sensor_state == BLACK || right_sensor_state == BLACK)
     { //Time to turn backwards bin

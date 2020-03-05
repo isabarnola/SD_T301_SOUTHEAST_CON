@@ -141,7 +141,7 @@ int pos = 0;   // used to determine robot's current position
 #define TURN_180         8
 #define GO_TO_BIN        9 
 
-const int num_states_to_do = 7;
+const int num_states_to_do = 11;
 int states_to_do[num_states_to_do] = {
                                           LINE_FOLLOWING,
                                           TURN_RIGHT_BIN,
@@ -149,6 +149,10 @@ int states_to_do[num_states_to_do] = {
                                           BACK_TO_LINE,
                                           TURN_LEFT_LINE,
                                           LINE_FOLLOWING,
+                                          TURN_LEFT_BIN,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_RIGHT_LINE,
                                           STOP};
 int state = LINE_FOLLOWING;
 int itr_s = -1;           // used to iterate through array of states
@@ -289,7 +293,7 @@ void loop()
         print_state(); // prints the current state to serial port
         delay(100);
         back_off_time(t_back_tlr);
-        delay(100);
+        delay(200);
         turn_right_line(time_turn_r_l);
       } 
         //closing TURN_RIGHT_LINE
