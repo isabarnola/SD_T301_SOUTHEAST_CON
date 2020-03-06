@@ -8,29 +8,35 @@
 // ================================================================
 // MOTORS
 // ================================================================
-#define L_Forward  LOW
-#define R_Forward  HIGH
-#define L_Backward HIGH
-#define R_Backward LOW
+#define L_Forward  LOW //HIGH //LOW
+#define R_Forward  HIGH //LOW  //HIGH
+#define L_Backward HIGH //LOW  //HIGH
+#define R_Backward LOW //HIGH //LOW
 #define plus_factor 6
 #define turn_speed  50
-#define turn_speed1 60
-int speed_R  = 68;//95;//85;// MAX = 255
-int speed_L =49;  //105;//95; // MAX = 255
+#define turn_speed1 600
+int speed_R  = 55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
+int speed_L = 59;//69;//49;        //68;//49;  //105;//95; // MAX = 255
 int slow_R = 55;
 int slow_L = 55;
 
 //-----------------------
 // Motor : Right
 //-----------------------
-int R_ME  = 6;   //Enable Pin of the Right Motor (must be PWM)
-int R_M1 = 51;    //Control Pin
+// M1 PWM
+//ORANGE
+int R_ME  = 3;//2;//6;   //Enable Pin of the Right Motor (must be PWM)
+// M1 EN 
+// YELLOW
+int R_M1 = 23;//22; //51;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
-int L_ME  = 4;   //Enable Pin of the Left Motor (must be PWM)
-int L_M1 = 50;
+// GREEN
+int L_ME  = 2;//3;//4;   //Enable Pin of the Left Motor (must be PWM)
+// BLUE
+int L_M1 = 22;//23;//50;
 
 int dir = 0;
 int cnt = 0;
@@ -75,25 +81,25 @@ int left_arm_sensor_state;
 //-----------------------
 // Sensor: Right arm
 //-----------------------
-const int right_arm_sensor_pin = 34; // BLUE
+const int right_arm_sensor_pin = 28; // BLUE
 int right_arm_sensor_state;
 
 //-----------------------
 // Sensor: FRONT Right 
 //-----------------------
-const int front_right_pin = 30;  // YELLOW
+const int front_right_pin = 29;  // GREEN
 int front_right_sensor_state;
 
 //-----------------------
 // Sensor: FRONT left 
 //-----------------------
-const int front_left_pin = 35;  // GREEN
+const int front_left_pin = 30;  // YELLOW
 int front_left_sensor_state;
 
 //-----------------------
 // Sensor: low right 
 //-----------------------
-const int low_right_pin = 8;  // blue
+const int low_right_pin = 31;  // blue
 int low_right_sensor_state;
 
 //-----------------------

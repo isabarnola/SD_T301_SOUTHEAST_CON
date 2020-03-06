@@ -128,10 +128,10 @@
           void encoder1CHB(void);
           void encoder1CHA(void);
 
-          const byte interruptPIN2 = 20; // YELLOW RIGHT
-          const byte interruptPIN3 = 24; // WHITE  RIGHT
-          const byte interruptPIN0 = 21; // YELLOW LEFT
-          const byte interruptPIN1 = 25; // WHITE  LEFT
+          const byte interruptPIN2 = 26;//24; // YELLOW RIGHT
+          const byte interruptPIN3 = 27;//25; // WHITE  RIGHT
+          const byte interruptPIN0 = 24;//26; // YELLOW LEFT
+          const byte interruptPIN1 = 25;//27; // WHITE  LEFT
 
           byte state0 = 0;
           byte state1 = 0;
