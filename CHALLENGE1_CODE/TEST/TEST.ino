@@ -8,15 +8,15 @@
 // ================================================================
 // MOTORS
 // ================================================================
-#define L_Forward  HIGH //LOW //HIGH //LOW
-#define R_Forward  LOW  //HIGH //LOW  //HIGH
-#define L_Backward LOW  //HIGH //LOW  //HIGH
-#define R_Backward HIGH //LOW //HIGH //LOW
-#define plus_factor 6
+#define L_Forward  LOW //HIGH //LOW
+#define L_Backward HIGH //LOW  //HIGH
+#define R_Forward  HIGH //LOW  //HIGH
+#define R_Backward LOW //HIGH //LOW
+#define plus_factor 3
 #define turn_speed  50
 #define turn_speed1 600
-int speed_R  = 49;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
-int speed_L = 59;//69;//49;        //68;//49;  //105;//95; // MAX = 255
+int speed_R  = 54;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
+int speed_L = 55;//69;//49;        //68;//49;  //105;//95; // MAX = 255
 int slow_R = 55;
 int slow_L = 55;
 
@@ -25,18 +25,18 @@ int slow_L = 55;
 //-----------------------
 // M1 PWM
 //ORANGE
-int R_ME  = 3;//2;//6;   //Enable Pin of the Right Motor (must be PWM)
+int R_ME  = 2;//3;//2;//6;   //Enable Pin of the Right Motor (must be PWM)
 // M1 EN 
 // YELLOW
-int R_M1 = 23;//22; //51;    //Control Pin
+int R_M1 = 22;//22;//23;//22; //51;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
 // GREEN
-int L_ME  = 2;//3;//4;   //Enable Pin of the Left Motor (must be PWM)
+int L_ME  = 3;//2;//3;//4;   //Enable Pin of the Left Motor (must be PWM)
 // BLUE
-int L_M1 = 22;//23;//50;
+int L_M1 = 23; //22;//23;//50;
 
 int dir = 0;
 int cnt = 0;
@@ -242,6 +242,7 @@ void loop()
   //-------------------------------------
   // FSM
   //-------------------------------------
+  /*
   switch(state)
   {//opening switch
     
@@ -250,10 +251,7 @@ void loop()
     //-----------------------
     case LINE_FOLLOWING:
       { //opening LINE_FOLLOWING
-        /* 
-         * Function does basic line following   
-         * Takes number of lines to cross as input
-         */
+      
          print_state(); // prints the current state to serial port
          // Line following - parameters set on top
          line_following(lines_to_do[do_lf],plus_dir); 
@@ -413,5 +411,9 @@ void loop()
       break;
       
   }//closing switch
+  */
+  back_before_turn(2000);
+
+
 }
   // closing loop

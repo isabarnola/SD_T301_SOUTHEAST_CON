@@ -8,15 +8,15 @@
 // ================================================================
 // MOTORS
 // ================================================================
-#define L_Forward  HIGH //LOW //HIGH //LOW
-#define R_Forward  LOW  //HIGH //LOW  //HIGH
-#define L_Backward LOW  //HIGH //LOW  //HIGH
-#define R_Backward HIGH //LOW //HIGH //LOW
-#define plus_factor 6
+#define L_Forward  HIGH //LOW
+#define R_Forward  LOW  //HIGH
+#define L_Backward LOW  //HIGH
+#define R_Backward HIGH //LOW
+#define plus_factor 4
 #define turn_speed  50
 #define turn_speed1 600
-int speed_R  = 49;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
-int speed_L = 59;//69;//49;        //68;//49;  //105;//95; // MAX = 255
+int speed_R  = 57;//54;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
+int speed_L = 52;//0;//69;//49;        //68;//49;  //105;//95; // MAX = 255
 int slow_R = 55;
 int slow_L = 55;
 
@@ -25,18 +25,18 @@ int slow_L = 55;
 //-----------------------
 // M1 PWM
 //ORANGE
-int R_ME  = 3;//2;//6;   //Enable Pin of the Right Motor (must be PWM)
+int R_ME  = 3; //2;//3;//2;//6;   //Enable Pin of the Right Motor (must be PWM)
 // M1 EN 
 // YELLOW
-int R_M1 = 23;//22; //51;    //Control Pin
+int R_M1 = 23;//22;//23;//22; //51;    //Control Pin
 
 //-----------------------
 // Motor : Left
 //-----------------------
 // GREEN
-int L_ME  = 2;//3;//4;   //Enable Pin of the Left Motor (must be PWM)
+int L_ME  = 2;//3;//2;//3;//4;   //Enable Pin of the Left Motor (must be PWM)
 // BLUE
-int L_M1 = 22;//23;//50;
+int L_M1 = 22;//23; //22;//23;//50;
 
 int dir = 0;
 int cnt = 0;
@@ -117,8 +117,8 @@ int low_left_sensor_state;
 #define time_turn_lb         860  // time to turn on left
 
 //Right
-#define t_back_trb           1000 // time to back up on right
-#define time_turn_rb         1200 // time to turn on right
+#define t_back_trb           900//1000 // time to back up on right
+#define time_turn_rb         1000//1200 // time to turn on right
 
 // ================================================================
 //TURN_LINE
@@ -271,7 +271,7 @@ void loop()
         delay(100);
         back_before_turn(t_back_trb);
         delay(200);
-        turn_right_bin(time_turn_rb);
+        turn_left_bin(time_turn_rb);
         last_dir = RIGHT;
       } 
         //closing TURN_RIGHT_BIN
@@ -285,7 +285,7 @@ void loop()
         print_state(); // prints the current state to serial port
         delay(100);
         back_before_turn(t_back_tlb);  
-        turn_left_bin(time_turn_lb);
+        turn_right_bin(time_turn_lb);
         last_dir = LEFT;   
       } 
         //closing TURN_LEFT_BIN
@@ -300,7 +300,7 @@ void loop()
         delay(100);
         back_off_time(t_back_tlr);
         delay(200);
-        turn_right_line(time_turn_r_l);
+        turn_left_line(time_turn_r_l);
       } 
         //closing TURN_RIGHT_LINE
       break;
