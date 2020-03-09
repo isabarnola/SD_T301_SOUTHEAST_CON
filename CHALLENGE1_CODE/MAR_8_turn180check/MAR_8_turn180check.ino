@@ -179,7 +179,7 @@ int pos = 0;   // used to determine robot's current position
 const int num_states_to_do = 7;
 int states_to_do[num_states_to_do] = {
                                           LINE_FOLLOWING,
-                                          TURN_LEFT_BIN,
+                                          TURN_RIGHT_BIN,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
                                           TURN_180,
@@ -380,8 +380,7 @@ void loop()
         else 
         { // opening when last was right 
            // 90 degrees left - to the line
-           delay(1000);
-           back_off_time(t_back_tlr);
+
            delay(1000);
            turn_left_line(time_turn_r_l);
            // 90 degrees left  - to the bin

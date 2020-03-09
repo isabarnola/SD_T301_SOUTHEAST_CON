@@ -1,4 +1,4 @@
-/*
+  /*
   FILE :  Stacking_challenge_7digits
   DESCRIPTION: 1st Challenge of SoutheastCon Hardware competition 2020
   AUTHOR : ISABEL BARNOLA
@@ -13,10 +13,11 @@
 #define L_Backward LOW  //HIGH
 #define R_Backward HIGH //LOW
 #define plus_factor 5
+#define aligned_factor 6
 #define turn_speed  50
 #define turn_speed1 600
-int speed_R  = 67;//57;//54;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
-int speed_L = 62;//52;//0;//69;//49;        //68;//49;  //105;//95; // MAX = 255
+int speed_R  = 65;//57;//54;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
+int speed_L = 60;//52;//0;//69;//49;        //68;//49;  //105;//95; // MAX = 255
 int slow_R = 55;
 int slow_L = 55;
 
@@ -142,12 +143,12 @@ const int led_l = 34;
 //TURN_BIN
 // ================================================================
 //Left
-#define t_back_tlb           700  // time to back up on left
+#define t_back_tlb           750  // time to back up on left
 #define time_turn_lb         1100  // time to turn on left
 
 //Right
 #define t_back_trb           850//1000 // time to back up on right
-#define time_turn_rb         1000//1200 // time to turn on right
+#define time_turn_rb         900//1200 // time to turn on right
 
 // ================================================================
 //TURN_LINE
@@ -157,7 +158,7 @@ const int led_l = 34;
 #define time_turn_l_l        1100 // time to turn on left
 // Right
 #define t_back_tlr           600  // time to back up on right
-#define time_turn_r_l        1200 // time to turn on right
+#define time_turn_r_l        900 // time to turn on right
 
 int e_turn = 0;
 int pos = 0;   // used to determine robot's current position 
@@ -176,14 +177,28 @@ int pos = 0;   // used to determine robot's current position
 #define TURN_180         8
 #define GO_TO_BIN        9 
 
-const int num_states_to_do = 7;
+const int num_states_to_do = 21;
 int states_to_do[num_states_to_do] = {
+                                          LINE_FOLLOWING,
+                                          TURN_LEFT_BIN,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_RIGHT_LINE,
                                           LINE_FOLLOWING,
                                           TURN_LEFT_BIN,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
                                           TURN_180,
                                           GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_180,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          LINE_FOLLOWING,
+                                          TURN_RIGHT_BIN,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_LEFT_LINE,
                                           STOP};
 int state = LINE_FOLLOWING;
 int itr_s = -1;           // used to iterate through array of states
@@ -198,9 +213,9 @@ int last_dir = 0;
 #define WHITE LOW
 #define plus_dir  1
 #define minus_dir -1
-const int bins_to_go_LF = 5; // the total number of bins to go with LF
+const int bins_to_go_LF = 3; // the total number of bins to go with LF
 int white_lines = 0;
-int lines_to_do[bins_to_go_LF] = {3,2,1,1,1};
+int lines_to_do[bins_to_go_LF] = {3,2,3};
 //int direc_to_do[bins_to_go_LF] = {plus_dir};
 int do_lf = 0;
 
@@ -364,29 +379,33 @@ void loop()
       { //opening TURN_180
         print_state(); // prints the current state to serial port
         if(last_dir == LEFT)
+          Serial.println("LEFT");
+        else
+          Serial.println("RIGHT");
+          
+        if(last_dir == LEFT)
         { // opening when last was left
           // 90 degrees right - to the line
-          //delay(1000);
-          //back_off_time(t_back_tlr);
-          delay(1000);
-          turn_right_line(time_turn_r_l);
+          
+          delay(500);
+          Serial.println("TURN 180 go to turn_right_line");
+          int temp = time_turn_r_l + 200;
+          turn_right_line(temp);
           // 90 degrees right  - to the bin
-          delay(1000);
-          //back_before_turn(t_back_trb);
-          delay(2000);
+         Serial.println("TURN 180 go to turn_left_bin");
+          
+          delay(500);
           turn_left_bin(time_turn_rb);
         }
           // closing when last was left
         else 
         { // opening when last was right 
            // 90 degrees left - to the line
-           delay(1000);
-           back_off_time(t_back_tlr);
+          
            delay(1000);
            turn_left_line(time_turn_r_l);
            // 90 degrees left  - to the bin
-           delay(1000);
-           //back_before_turn(t_back_tlb);
+         
            delay(1000);  
            turn_right_bin(time_turn_lb);
         }
@@ -425,6 +444,19 @@ void loop()
     case STACK:
       { //opening STACK
         print_state(); // prints the current state to serial port
+       if(stack == 0)
+       {
+        firstStack();
+       }
+       else if(stack<5)
+       {
+        bstack();
+       }
+       else
+       {
+        lastStack();
+       }
+        
       } 
         //closing STACK
       break;

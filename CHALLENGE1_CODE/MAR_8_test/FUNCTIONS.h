@@ -80,6 +80,9 @@ void advance(char a,char b)          //Move forward
 }
 void read_ir()
 {
+  Serial.println("FUNCTION read_ir");
+  print_state(); // prints the current state to serial port
+
   left_sensor_state         =  digitalRead(left_sensor_pin);
   right_sensor_state        =  digitalRead(right_sensor_pin);
   middle_sensor_state       =  digitalRead(middle_sensor_pin);
@@ -88,15 +91,8 @@ void read_ir()
   front_right_sensor_state  =  digitalRead(front_right_pin);
   front_left_sensor_state   =  digitalRead(front_left_pin);
   low_right_sensor_state    =  (digitalRead(low_right_pin));
-  if (low_right_sensor_state == 0)
-    digitalWrite(led_r, HIGH);
-  else
-    digitalWrite(led_r, LOW);
-  low_left_sensor_state     =  (digitalRead(low_left_pin));
-    if (low_left_sensor_state == 0)
-    digitalWrite(led_l, HIGH);
-  else
-    digitalWrite(led_l, LOW);
+
+    
 }
 void back_off (char a,char b)          //Move backward
 {
@@ -135,6 +131,7 @@ void turn_R_line (char b)             //Turn Right
 }
 void go_straight()
 {
+  
   int temp1 = abs(cur_wvel[1] -  cur_wvel[0]);
   
   if (temp1 >= 0.05 && temp1 <= 0.5 )
@@ -232,7 +229,8 @@ void turn_90_l(int right, int left, int time, int time_to_turn)
 
 void back_before_turn(int timee)
 {
-  Serial.println("FUNCTION Back before turn");
+  Serial.println("FUNCTION back_before_turn");
+  print_state(); // prints the current state to serial port
   long int TimeMillis = 0;
     
     long int time = millis();
@@ -252,6 +250,8 @@ void back_before_turn(int timee)
 void advance_before_tll(int timee)
 {
   Serial.println("FUNCTION  advance_before_tll");
+  print_state(); // prints the current state to serial port
+
   long int TimeMillis = 0;
     
     long int time = millis();
@@ -269,11 +269,13 @@ void advance_before_tll(int timee)
 
 void aligned_bin(int time1, int correct_time)
 {
+  Serial.println("FUNCTION  aligned_bin");
+  print_state(); // prints the current state to serial port
 
     int r = speed_R;
     int l = speed_L;
-    speed_R = speed_R -6;
-    speed_L = speed_L - 6;
+    speed_R = speed_R - aligned_factor;
+    speed_L = speed_L - aligned_factor;
     //int correct_time = 200;
     //int time1 = millis();
     Serial.println("==========alignee=======");
@@ -365,6 +367,8 @@ void aligned_bin(int time1, int correct_time)
 void aligned_bin_right(int time1, int correct_time)
 {
    Serial.println("FUNCTION aligned_bin_right");
+   print_state(); // prints the current state to serial port
+   
     //int correct_time = 200;
     //int time1 = millis();
     Serial.println("==========aligned_bin_right=======");
@@ -603,6 +607,7 @@ void line_following(int lines, int dir)
 void back_to_line_front()
 {
    Serial.println("BACK TO LINE FRONT");
+   print_state(); // prints the current state to serial port
 
    int r = speed_R;
    int l = speed_L;
@@ -692,6 +697,9 @@ void back_to_line_front()
 
 void turn_left_bin(int turntime)
 {
+    Serial.println("turn_left_bin");
+    print_state(); // prints the current state to serial port
+
     turn_90_l(speed_R,speed_R, millis(), turntime);   
     delay(1000);
     read_ir();
@@ -703,6 +711,9 @@ void turn_left_bin(int turntime)
 
 void turn_right_line(int turntime)
 {
+  Serial.println("FUNCTION turn_right_line");
+  print_state(); // prints the current state to serial port
+
    analogWrite (R_ME,speed_R);
   analogWrite (L_ME,speed_L);
   int TimeMillis = 0;
@@ -724,6 +735,8 @@ void turn_right_line(int turntime)
 void turn_left_line(int turntime)
 {
   Serial.println("FUNCTION turn_left_line");
+  print_state(); // prints the current state to serial port
+
   analogWrite (R_ME,speed_R+10);
   analogWrite (L_ME,speed_L);
   int TimeMillis = 0;
@@ -768,6 +781,7 @@ void turn_left_line(int turntime)
 void back_to_line()
 {   
   Serial.println("BACK TO LINE");
+  print_state(); // prints the current state to serial port
 
   /* int r = speed_R;
    int l = speed_L;
@@ -804,6 +818,8 @@ void back_to_line()
 void turn_right_bin(int turntime)
 {
     Serial.print("turn_right_bin(");
+    print_state(); // prints the current state to serial port
+
     turn_90_r(speed_R,speed_R, millis(), turntime);  
     delay(100);
     
@@ -817,6 +833,8 @@ void turn_right_bin(int turntime)
 void go_to_bin()
 {
   Serial.println("GO TO BIN FUNCTION");
+  print_state(); // prints the current state to serial port
+
   int exit = 0;
    
   
@@ -841,7 +859,7 @@ void go_to_bin()
         Serial.println(front_right_sensor_state);
         read_ir();
         if ((left_arm_sensor_state == WHITE && right_arm_sensor_state == WHITE ) && (low_right_sensor_state == WHITE  ) || 
-            (low_right_sensor_state == WHITE  ))
+            (low_left_sensor_state == WHITE  ))
         {
           Serial.print(left_arm_sensor_state);
            Serial.print("\t");
@@ -878,6 +896,8 @@ void go_to_bin()
 void back_off_time(int time_t)
 {
    Serial.println("FUNCTION back_off_time");
+   print_state(); // prints the current state to serial port
+   
   long int TimeMillis = 0;
  long int time1 = micros();
   while(TimeMillis - time1 < time_t)

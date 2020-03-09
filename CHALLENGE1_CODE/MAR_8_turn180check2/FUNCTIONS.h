@@ -40,9 +40,13 @@ void print_state()
   {
     Serial.println("STATE = STACK ############################");
   }
-  else if (state == TURN_180)
+  else if (state == TURN_180_R)
   {
-   Serial.println("STATE = TURN_180 ##########################");
+   Serial.println("STATE = TURN_180_R ##########################");
+  }
+  else if (state == TURN_180_L)
+  {
+   Serial.println("STATE = TURN_180_L ##########################");
   }
 }
 
@@ -272,8 +276,8 @@ void aligned_bin(int time1, int correct_time)
 
     int r = speed_R;
     int l = speed_L;
-    speed_R = speed_R -6;
-    speed_L = speed_L - 6;
+    speed_R = speed_R - alignement_factor;
+    speed_L = speed_L - alignement_factor;
     //int correct_time = 200;
     //int time1 = millis();
     Serial.println("==========alignee=======");
@@ -345,7 +349,7 @@ void aligned_bin(int time1, int correct_time)
           } 
           else
           {*/
-            advance(r,l);
+            advance(speed_R,speed_L);
             Serial.print("advance");
           //  }
          }
@@ -697,7 +701,7 @@ void turn_left_bin(int turntime)
     read_ir();
     
      // back_to_line_front();
-     back_before_turn(700);
+     back_before_turn(500);
     aligned_bin(millis(),1000);  
 }
 
@@ -807,7 +811,7 @@ void turn_right_bin(int turntime)
     turn_90_r(speed_R,speed_R, millis(), turntime);  
     delay(100);
     
-      back_before_turn(700);
+      back_before_turn(500);
       delay(300);
     
    //aligned_bin_right(millis(),1000); 
@@ -818,6 +822,10 @@ void go_to_bin()
 {
   Serial.println("GO TO BIN FUNCTION");
   int exit = 0;
+   int r = speed_R;
+   int l = speed_L;
+   speed_R = speed_R - alignement_factor;
+   speed_L = speed_L - alignement_factor;
    
   
 
@@ -840,8 +848,9 @@ void go_to_bin()
         Serial.print("front_right_sensor_state ");
         Serial.println(front_right_sensor_state);
         read_ir();
-        if ((left_arm_sensor_state == WHITE && right_arm_sensor_state == WHITE ) && (low_right_sensor_state == WHITE  ) || 
-            (low_right_sensor_state == WHITE  ))
+        if (
+           ((left_arm_sensor_state == WHITE && right_arm_sensor_state == WHITE ) && (low_right_sensor_state == WHITE  ) || (low_right_sensor_state == WHITE  ))
+           || (low_right_sensor_state == WHITE  ) || (low_right_sensor_state == WHITE  ))
         {
           Serial.print(left_arm_sensor_state);
            Serial.print("\t");
@@ -872,7 +881,10 @@ void go_to_bin()
           advance(speed_R,speed_L); // move forward
          }
     }
-    
+
+
+    speed_R = r;
+    speed_L = l;
   }
 
 void back_off_time(int time_t)

@@ -13,6 +13,7 @@
 #define L_Backward LOW  //HIGH
 #define R_Backward HIGH //LOW
 #define plus_factor 5
+#define alignement_factor 6
 #define turn_speed  50
 #define turn_speed1 600
 int speed_R  = 67;//57;//54;//55;//65;//45; //52; //49; //68; //49;//49;//68;//95;//85;// MAX = 255
@@ -142,11 +143,11 @@ const int led_l = 34;
 //TURN_BIN
 // ================================================================
 //Left
-#define t_back_tlb           700  // time to back up on left
+#define t_back_tlb           800  // time to back up on left
 #define time_turn_lb         1100  // time to turn on left
 
 //Right
-#define t_back_trb           850//1000 // time to back up on right
+#define t_back_trb           700//1000 // time to back up on right
 #define time_turn_rb         1000//1200 // time to turn on right
 
 // ================================================================
@@ -154,10 +155,33 @@ const int led_l = 34;
 // ================================================================
 //Left
 #define t_back_tll           300  // time to back up on left
-#define time_turn_l_l        1100 // time to turn on left
+#define time_turn_l_l        900 // time to turn on left
 // Right
 #define t_back_tlr           600  // time to back up on right
-#define time_turn_r_l        1200 // time to turn on right
+#define time_turn_r_l        900 // time to turn on right
+
+// ================================================================
+//TURN_BIN 180
+// ================================================================
+//Left
+#define t_back_tlb_180           700  // time to back up on left
+#define time_turn_lb_180         1100  // time to turn on left
+
+//Right
+#define t_back_trb_180           850//1000 // time to back up on right
+#define time_turn_rb_180         1000//1200 // time to turn on right
+
+
+// ================================================================
+//TURN_LINE 180
+// ================================================================
+//Left
+#define t_back_tll_180           300  // time to back up on left
+#define time_turn_l_l_180        1000 // time to turn on left
+// Right
+#define t_back_tlr_180           600  // time to back up on right
+#define time_turn_r_l_180        1200 // time to turn on right
+
 
 int e_turn = 0;
 int pos = 0;   // used to determine robot's current position 
@@ -173,17 +197,35 @@ int pos = 0;   // used to determine robot's current position
 #define TURN_LEFT_LINE   5
 #define BACK_TO_LINE     6
 #define STACK            7
-#define TURN_180         8
+#define TURN_180_R       8
 #define GO_TO_BIN        9 
-
-const int num_states_to_do = 7;
+#define TURN_180_L       10
+  
+const int num_states_to_do = 24;
 int states_to_do[num_states_to_do] = {
                                           LINE_FOLLOWING,
                                           TURN_LEFT_BIN,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
-                                          TURN_180,
+                                          TURN_RIGHT_LINE,
+                                          LINE_FOLLOWING,
+                                          TURN_LEFT_BIN,
                                           GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_RIGHT_LINE,
+                                          TURN_RIGHT_BIN,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_LEFT_LINE,
+                                          TURN_LEFT_BIN,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_RIGHT_LINE,
+                                          LINE_FOLLOWING,
+                                          TURN_RIGHT_BIN,
+                                          GO_TO_BIN,
+                                          BACK_TO_LINE,
+                                          TURN_LEFT_LINE,
                                           STOP};
 int state = LINE_FOLLOWING;
 int itr_s = -1;           // used to iterate through array of states
@@ -198,9 +240,9 @@ int last_dir = 0;
 #define WHITE LOW
 #define plus_dir  1
 #define minus_dir -1
-const int bins_to_go_LF = 5; // the total number of bins to go with LF
+const int bins_to_go_LF = 3; // the total number of bins to go with LF
 int white_lines = 0;
-int lines_to_do[bins_to_go_LF] = {3,2,1,1,1};
+int lines_to_do[] = {3,2,2};
 //int direc_to_do[bins_to_go_LF] = {plus_dir};
 int do_lf = 0;
 
@@ -360,41 +402,43 @@ void loop()
     //-----------------------
     //TURN_180 
     //-----------------------
-    case TURN_180:
+    case TURN_180_L:
       { //opening TURN_180
         print_state(); // prints the current state to serial port
-        if(last_dir == LEFT)
-        { // opening when last was left
-          // 90 degrees right - to the line
-          //delay(1000);
-          //back_off_time(t_back_tlr);
-          delay(1000);
-          turn_right_line(time_turn_r_l);
-          // 90 degrees right  - to the bin
-          delay(1000);
-          //back_before_turn(t_back_trb);
-          delay(2000);
-          turn_left_bin(time_turn_rb);
-        }
+       
+       
           // closing when last was left
-        else 
-        { // opening when last was right 
+         // opening when last was right 
            // 90 degrees left - to the line
+
            delay(1000);
-           back_off_time(t_back_tlr);
-           delay(1000);
-           turn_left_line(time_turn_r_l);
+           turn_left_line(time_turn_l_l_180);
            // 90 degrees left  - to the bin
            delay(1000);
            //back_before_turn(t_back_tlb);
            delay(1000);  
-           turn_right_bin(time_turn_lb);
-        }
+           turn_right_bin(time_turn_lb_180);
+        
           // closing when last was right
       } 
         //closing TURN_180
       break;
 
+    case TURN_180_R:
+     { // opening when last was left
+           print_state(); // prints the current state to serial port
+          // 90 degrees right - to the line
+          //delay(1000);
+          //back_off_time(t_back_tlr);
+          delay(1000);
+          turn_right_line(time_turn_r_l_180);
+          // 90 degrees right  - to the bin
+          delay(1000);
+          //back_before_turn(t_back_trb);
+          delay(2000);
+          turn_left_bin(time_turn_rb_180);
+        }
+    break;
     //-----------------------
     // GO_TO_BIN
     //-----------------------
