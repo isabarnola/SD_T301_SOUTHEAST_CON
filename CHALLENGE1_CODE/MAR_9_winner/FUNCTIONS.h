@@ -1,12 +1,12 @@
 // ================================================================
 // Function
 // ================================================================
-void back_before_turn(long int timee);
+void back_before_turn(long  timee);
 
-void turn_180_r_bin (long int turntime);
+void turn_180_r_bin (long  turntime);
 
 
-void turn_180_l_bin(long int turntime);
+void turn_180_l_bin(long  turntime);
 
 void print_state()
 {
@@ -212,39 +212,42 @@ void fix_turn_l_90_line(int right, int left)
   }
 }
 
-void turn_90_r(int right, int left, long int time2, long int time_to_turn)
+void turn_90_r(int right, int left, long time2, int time_to_turn)
 {
   analogWrite (R_ME,right);
   analogWrite (L_ME,left);
-  long int TimeMillis = 0;
+  long TimeMillis = 0;
   time2= millis();
- 
-  while(TimeMillis - time2 < time_to_turn)
+ int t = 0;
+  while(TimeMillis - time2< time_to_turn)
    {                  //Time to turn towards bin
     Serial.println("---------------------Time to turn:  ");
     Serial.println(TimeMillis - time2);
     digitalWrite(R_M1,R_Forward);
     digitalWrite(L_M1,L_Backward);
     TimeMillis = millis();
+    t++;
   }
   analogWrite (R_ME,0);
   analogWrite (L_ME, 0);
   //fix_turn_r_90_line(right,left);
 }
 
-void turn_90_l(int right, int left, long int time2, long int time_to_turn)
+void turn_90_l(int right, int left, long time2, int time_to_turn)
 {
   analogWrite (R_ME,right);
   analogWrite (L_ME,left);
-  long int TimeMillis = 0;
+  long TimeMillis = 0;
   time2 = millis();
-  while(TimeMillis - time2 < time_to_turn)
+  int t = 0;
+  while(t< time_to_turn)
    {                  //Time to turn towards bin
     Serial.println("turn 90 l---------------------Time to turn:  ");
     Serial.println(TimeMillis - time2);
     digitalWrite(R_M1,R_Backward);
     digitalWrite(L_M1,L_Forward);
     TimeMillis = millis();
+    t++;
   }
   analogWrite (R_ME,0);
   analogWrite (L_ME, 0);
@@ -253,12 +256,12 @@ void turn_90_l(int right, int left, long int time2, long int time_to_turn)
 }
 
 
-void advance_before_tll(long int timee)
+void advance_before_tll(long timee)
 {
   Serial.println("FUNCTION  advance_before_tll");
-  long int TimeMillis = 0;
+  long TimeMillis = 0;
     
-    long int time = millis();
+    long time = millis();
     while(TimeMillis - time < timee) //700)
     {                  //Time to turn towards bin
       Serial.println("  advance_before_tll:  ");
@@ -271,7 +274,7 @@ void advance_before_tll(long int timee)
   
   }
 
-void aligned_bin(int time1, long int correct_time)
+void aligned_bin(int time1, long correct_time)
 {
 
     int r = speed_R;
@@ -284,7 +287,7 @@ void aligned_bin(int time1, long int correct_time)
      read_ir();
 
     int exit = 0;
-    long int TimeMillis = 0;
+    long TimeMillis = 0;
     int invert = 0;
     int forward = 0;
     while (exit == 0)
@@ -357,6 +360,7 @@ void aligned_bin(int time1, long int correct_time)
         {
           Serial.println("aligned");
           stopp(); 
+          delay(200);
             exit = 1;
         }
         TimeMillis = millis();
@@ -365,7 +369,7 @@ void aligned_bin(int time1, long int correct_time)
     speed_L = l;
 }
 
-void aligned_bin_right(long int time1, long int correct_time)
+void aligned_bin_right(long time1, long correct_time)
 {
    Serial.println("FUNCTION aligned_bin_right");
     //int correct_time = 200;
@@ -374,7 +378,7 @@ void aligned_bin_right(long int time1, long int correct_time)
      read_ir();
     
     int exit = 0;
-    long int TimeMillis = 0;
+    long TimeMillis = 0;
     int invert = 0;
     int forward = 0;
     while (exit == 0)
@@ -613,9 +617,9 @@ void back_to_line_front()
    int r1_l2 = 0;
     read_ir();
 
-   long int TimeMillis = 0;
+   long TimeMillis = 0;
     int correct = 0;
-   long int time1 = millis();
+   long time1 = millis();
   
      while((front_left_sensor_state == BLACK || front_right_sensor_state == BLACK)  &&  correct == 0 )
     { //Time to turn backwards bin
@@ -696,52 +700,51 @@ void turn_left_bin(int turntime)
     read_ir();
     
      // back_to_line_front();
-     back_before_turn(700);
+     back_before_turn(9);
     aligned_bin(millis(),1000);  
 }
 
-void turn_right_line(long int turntime)
+void turn_right_line(long max)
 {
    analogWrite (R_ME,speed_R);
   analogWrite (L_ME,speed_L);
-  long int TimeMillis = 0;
-  long int correct = 0;
- long int time1 = millis();
-  while(TimeMillis - time1 < turntime)
+  long TimeMillis = 0;
+  long correct = 0;
+ long time1 = millis();
+ int i = 0;
+  while(i < 18)
    {                  //Time to turn towards bin
     Serial.println("turn_right_line ---------------------Time to turn:  ");
     Serial.println(TimeMillis - time1);
     digitalWrite(R_M1,R_Backward);
     digitalWrite(L_M1,L_Forward);
-    TimeMillis = millis();
-    read_ir();
+  
+    i++;
   }
     analogWrite (R_ME,0);
     analogWrite (L_ME, 0);
 }
 
-void turn_left_line(long int turntime)
+void turn_left_line( int turntime)
 {
   Serial.println("FUNCTION turn_left_line");
   analogWrite (R_ME,speed_R+10);
   analogWrite (L_ME,speed_L);
-  long int TimeMillis = 0;
-  long int correct = 0;
- long int time1 = millis();
-  while(TimeMillis - time1 < turntime)
+  unsigned int TimeMillis = 0;
+  
+ unsigned int time1 = millis();
+ unsigned int correct = time1;
+ long i = 0;
+  while(i < turntime)
+  
    {                  //Time to turn towards bin
     Serial.println("turn_left_line ---------------------Time to turn:  ");
     Serial.println(TimeMillis - time1);
     digitalWrite(R_M1,R_Forward);
     digitalWrite(L_M1,L_Backward);
-    TimeMillis = millis();
-    read_ir();
-    if (front_left_sensor_state == WHITE)
-    {
-      Serial.println("correct = 1");
-      correct = correct+1;
-      TimeMillis = turntime;
-    }
+    //TimeMillis = millis();
+   
+    i++;
   }
   
 /*
@@ -767,11 +770,11 @@ void back_to_line()
 {   
   Serial.println("BACK TO LINE");
 
-  /* int r = speed_R;
+   int r = speed_R;
    int l = speed_L;
-   speed_R = speed_R -20;
-   speed_L = speed_L + 6;
-   */
+   speed_R = speed_R - 9;
+   speed_L = speed_L - 6;
+   
     read_ir();
      while(left_sensor_state == BLACK || right_sensor_state == BLACK)
     { //Time to turn backwards bin
@@ -795,6 +798,8 @@ void back_to_line()
       go_straight();
      // read_ir();
     }*/
+    speed_R =r;
+    speed_L = l;
 }
 
 void turn_right_bin(int turntime)
@@ -803,22 +808,22 @@ void turn_right_bin(int turntime)
     turn_90_r(speed_R,speed_R, millis(), turntime);  
     delay(100);
     
-      back_before_turn(700);
+      back_before_turn(9);
       delay(300);
     
    //aligned_bin_right(millis(),1000); 
    aligned_bin(millis(),1000);
 }
 
-void back_before_turn(long int timee)
+void back_before_turn(long timee)
 {
   Serial.println("FUNCTION Back before turn");
   print_state();
   if (state != test && state != OPPOSITE_R ){
-  long int TimeMillis = 0;
-    
-    long int time = millis();
-    while(TimeMillis - time < timee) //700)
+  long TimeMillis = 0;
+    int t = 0;
+    long time = millis();
+    while(t < timee) //700)
     {                  //Time to turn towards bin
       Serial.println(" back_before_turn() ---------------------backwardsn:  ");
       Serial.println(TimeMillis - time);
@@ -827,7 +832,8 @@ void back_before_turn(long int timee)
       get_current_status();
       go_straight();
       
-      TimeMillis = millis();
+     // TimeMillis = millis();
+      t++;
     }
   }
   else 
@@ -837,7 +843,7 @@ void back_before_turn(long int timee)
 }
 
 
-void turn_180_r_bin( long int turntime)
+void turn_180_r_bin( long turntime)
 {
   Serial.println("FUNCTION turn_180_r_bin");
   print_state();
@@ -847,8 +853,8 @@ void turn_180_r_bin( long int turntime)
   
   analogWrite (R_ME,right);
   analogWrite (L_ME,left);
-   long int TimeMillis = 0;
-   long int time2 = micros();
+   long TimeMillis = 0;
+   long time2 = micros();
   Serial.println(TimeMillis);
   Serial.println(time2);
   Serial.println(turntime);
@@ -870,7 +876,7 @@ void turn_180_r_bin( long int turntime)
 
 
 
-void turn_180_l_bin(long int turntime)
+void turn_180_l_bin(long turntime)
 {
   Serial.println("FUNCTION turn_180_l_bin");
   print_state();
@@ -878,8 +884,8 @@ void turn_180_l_bin(long int turntime)
   int left = speed_R;
   analogWrite (R_ME,right);
   analogWrite (L_ME,left);
-  long int TimeMillis = 0;
-  long int time2 = millis();
+  long TimeMillis = 0;
+  long time2 = millis();
  
   while(TimeMillis - time2 < turntime)
    {                  //Time to turn towards bin
@@ -902,7 +908,7 @@ void go_to_bin()
    int r = speed_R;
    int l = speed_L;
    speed_R = speed_R - go_to_factor;
-   speed_L = speed_L - go_to_factor +2;
+   speed_L = speed_L - go_to_factor ;
    
   
 
@@ -964,11 +970,11 @@ void go_to_bin()
     speed_L = l;
   }
 
-void back_off_time(long int time_t)
+void back_off_time(long time_t)
 {
    Serial.println("FUNCTION back_off_time");
-  long int TimeMillis = 0;
- long int time1 = micros();
+  long TimeMillis = 0;
+ long time1 = micros();
   while(TimeMillis - time1 < time_t)
    {      
       Serial.print("Timemillis ");
@@ -983,7 +989,7 @@ void back_off_time(long int time_t)
   }
 }
 
-int d2s(float block, int dir)
+int d2s(long block, int dir)
 { // opening d2s
   //This function converts the block height to a number of 
   // steps for the stepper to take.  

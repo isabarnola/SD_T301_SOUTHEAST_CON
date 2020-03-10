@@ -144,12 +144,12 @@ const int led_l = 34;
 //TURN_BIN
 // ================================================================
 //Left
-#define t_back_tlb           1200  // time to back up on left
+#define t_back_tlb           16  // time to back up on left
 #define time_turn_lb         1300  // time to turn on left
 
 //Right
-#define t_back_trb           700//1000 // time to back up on right
-#define time_turn_rb         1000//1200 // time to turn on right
+#define t_back_trb           16//1000 // time to back up on right
+#define time_turn_rb         18//1200 // time to turn on right
 
 // ================================================================
 //TURN_LINE
@@ -157,12 +157,12 @@ const int led_l = 34;
 //Left
 #define t_back_tll           300  // time to back up on left
 //#define time_turn_l_l        1000 // time to turn on left
-long int time_turn_l_l[] = {1400,1200};
+ int time_turn_l_l[] = {18,0};
 int ll = 0;
 // Right
 #define t_back_tlr           600  // time to back up on right
 //#define time_turn_r_l        1100 // time to turn on right
-long int time_turn_r_l[] ={1100,900};
+int time_turn_r_l[] ={13,13};
 int rl = 0;
 
 // ================================================================
@@ -214,18 +214,20 @@ int pos = 0;   // used to determine robot's current position
 #define test             11
 #define aligned          12
   
-const int num_states_to_do = 25;
+const int num_states_to_do = 29;
 int states_to_do[num_states_to_do] = {
                                           LINE_FOLLOWING,
                                           TURN_LEFT_BIN,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
+                                          
                                           TURN_RIGHT_LINE,
+                                          aligned,
                                           LINE_FOLLOWING,
                                           TURN_LEFT_BIN,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
-                                          OPPOSITE_R,
+                                          test,
                                           aligned,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
@@ -234,12 +236,17 @@ int states_to_do[num_states_to_do] = {
                                           aligned,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
+                                          
                                           TURN_RIGHT_LINE,
+                                          aligned,
                                           LINE_FOLLOWING,
                                           TURN_RIGHT_BIN,
                                           GO_TO_BIN,
                                           BACK_TO_LINE,
+                                          
                                           TURN_LEFT_LINE,
+                                          aligned,
+                                          LINE_FOLLOWING,
                                           STOP};
 int state = LINE_FOLLOWING;
 int itr_s = -1;           // used to iterate through array of states
@@ -256,7 +263,7 @@ int last_dir = 0;
 #define minus_dir -1
 const int bins_to_go_LF = 3; // the total number of bins to go with LF
 int white_lines = 0;
-int lines_to_do[] = {3,2,2};
+int lines_to_do[] = {3,2,2,2};
 //int direc_to_do[bins_to_go_LF] = {plus_dir};
 int do_lf = 0;
 
@@ -396,10 +403,14 @@ void loop()
         Serial.println("TURN_RIGHT_LINE");
         delay(100);
         back_off_time(t_back_tlr);
+        back_off(speed_R, speed_L);
+        back_off(speed_R, speed_L);
+        //back-off();
         delay(200);
         long int t = time_turn_r_l[rl];
         rl++;
         turn_right_line(t);
+        back_before_turn(3);
       } 
         //closing TURN_RIGHT_LINE
       break;
@@ -412,12 +423,13 @@ void loop()
         print_state(); // prints the current state to serial port
         Serial.println("TURN_LEFT_LINE");
         delay(100);
-        back_before_turn(400);
+        back_before_turn(8);
+
          //advance_before_tll(400);
          stopp();
          delay(300);
-        long int tt = time_turn_l_l[ll];
-        turn_left_line(time_turn_l_l);
+         int tt = time_turn_l_l[ll];
+        turn_left_line(tt);
         ll++;
       } 
         //closing TURN_LEFT_LINE
@@ -511,13 +523,15 @@ void loop()
            Serial.println(m);
            Serial.println(m - initial);
             long int t = 2200000;
-          while(m - initial < t)
+            int test2 = 0;
+          while(test2 < 43)
            {                  //Time to turn towards bin
             Serial.println("---------------------Time to turn:  ");
             Serial.println(m - initial);
             digitalWrite(R_M1,R_Backward);
             digitalWrite(L_M1,L_Forward);
             m = micros();
+            test2++;
           }
           analogWrite (R_ME,0);
           analogWrite (L_ME, 0);
@@ -528,7 +542,7 @@ void loop()
     case aligned:
     {
       
-      back_before_turn(500);
+      back_before_turn(6);
       delay(300);
      aligned_bin(millis(),1000);
       }break;
