@@ -214,40 +214,10 @@ int pos = 0;   // used to determine robot's current position
 #define test             11
 #define aligned          12
   
-const int num_states_to_do = 29;
+const int num_states_to_do = 1;
 int states_to_do[num_states_to_do] = {
-                                          LINE_FOLLOWING,
-                                          TURN_LEFT_BIN,
-                                          GO_TO_BIN,
-                                          BACK_TO_LINE,
-                                          
-                                          TURN_RIGHT_LINE,
-                                          aligned,
-                                          LINE_FOLLOWING,
-                                          TURN_LEFT_BIN,
-                                          GO_TO_BIN,
-                                          BACK_TO_LINE,
-                                          test,
-                                          aligned,
-                                          GO_TO_BIN,
-                                          BACK_TO_LINE,
-                                          STOP,
-                                          test,
-                                          aligned,
-                                          GO_TO_BIN,
-                                          BACK_TO_LINE,
-                                          
-                                          TURN_RIGHT_LINE,
-                                          aligned,
-                                          LINE_FOLLOWING,
-                                          TURN_RIGHT_BIN,
-                                          GO_TO_BIN,
-                                          BACK_TO_LINE,
-                                          
-                                          TURN_LEFT_LINE,
-                                          aligned,
-                                          LINE_FOLLOWING,
-                                          STOP};
+                                          STACK
+                                      };
 int state = LINE_FOLLOWING;
 int itr_s = -1;           // used to iterate through array of states
 #define RIGHT 10
