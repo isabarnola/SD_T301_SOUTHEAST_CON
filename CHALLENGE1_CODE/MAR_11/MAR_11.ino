@@ -563,7 +563,8 @@ void loop()
       delay(300);
      aligned_bin(millis(),1000);
      
-      }break;
+      }
+    break;
     //-----------------------
     // default
     //-----------------------
