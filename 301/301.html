@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="FAMU FSU ME Senior Design 301 Website">
+    <meta name="author" content="Isabel Barnola">
+	
+	<style>
+	* {
+	box-sizing: border-box;
+	}
+	
+	.column {
+	float: left;
+	width: 33%;
+	padding: 10px;
+	height: 300px;
+	}
+	
+	.row:after {
+	content: "";
+	display: table;
+	clear: both;
+	}
+	
+	/* Header/Logo Title */
+	.header {
+	  padding: 60px;
+	  text-align: center;
+	  background: #236192;
+	  color: white;
+	  font-size: 30px;
+	}
+	</style>
+	
+    <title>Team 301</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/scrolling-nav.css" rel="stylesheet">
+	<!--<link href="css/bootstrap.css" rel="stylesheet"> -->
+ 
+	<link href="css/timeline.css" rel="stylesheet"> <!-- for project timeline -->
+ 
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+      <div class="container">
+        <a>
+		<img src="pictures/coe_logo.png" alt="School Logo" Height = 90px>
+		</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="301.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="team301.html">Meet Team 301</a>
+            </li>
+	ß		<li class="nav-item">
+			  <a class="nav-link js-scroll-trigger" href="deliverables.html">Deliverables</a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link js-scroll-trigger" href="competition.html">Competition</a>
+			</li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+	
+	</br>
+	</br>
+	</br>
+	</br>
+      <div class="header">
+        <h1> Team 301:FAMU-FSU Southeast Con Hardware Competition Team </h1>
+        <h3> Department of Electrical & Computer Engineering</h3>
+		<h3> Department of Mechanical Engineering</h3>
+		
+      </div>
+
+	
+	<br/>
+	
+	<div class = "container">
+	<center> <b><h2>Project Sponsors and Advisers</h2></b> </center>
+	<ul class = "thumbnails">
+	<center>
+	
+	<div class="row">
+	
+	
+	
+	<div class="container"><div class = "thumbnail" class = "center">
+	<a href="https://www.eng.famu.fsu.edu//" target="_blank"><img src="pictures/coe_logo.png"" style ="widows: 200px;0px;height:200px;;" class="align-content-center">
+	<div class="caption"><font color = "000000">
+	<h3> FAMU-FSU College of Engineering</h3>
+	<p><b>Sponsor</b></p>
+	</a></font></div></div></div>
+	
+	
+
+	</div>
+	
+
+
+	<div class="row">
+	
+	<div class="column"><div class = "thumbnail">
+	<a href="https://www.eng.famu.fsu.edu/ece/people/harvey" target="_blank"> <img src="pictures/bruce-harvey.png" style ="width:160px;height:200px;">
+	<div class="caption"><font color = "000000">
+	<h3> Dr. Bruce Harvey</h3>
+	<p><b>Academic Adviser</b></p>
+	<p>Department of Electrical & Computer Engineering</p>
+	</a></font></div></div></div>
+    
+    <div class="column"><div class = "thumbnail">
+	<a href="https://www.eng.famu.fsu.edu/ece/people/hooker" target="_blank"> <img src="pictures/jerris-hooker.png" style ="width:160px;height:200px;">
+	<div class="caption"><font color = "000000">
+	<h3> Dr. Jerris Hooker</h3>
+	<p><b>Academic Adviser</b></p>
+	<p>Department of Electrical & Computer Engineering</p>
+	</a></font></div></div></div>
+	
+	<div class="column"><div class = "thumbnail">
+	<a href="https://www.eng.famu.fsu.edu/ece/people/chuy" target="_blank"> <img src="pictures/oscar-chuy.png" style ="width:160px;height:200px;">
+	<div class="caption"><font color = "000000">
+	<h3> Dr. Oscar Chuy</h3>
+	<p><b>Academic Adviser</b></p>
+	<p>Department of Electrical & Computer Engineering</p>
+	</a></font></div></div></div>
+	
+	
+	
+	</div>
+	</div>
+	
+	</center>
+	</br></br></br>
+	<section id="Abstract" class="bg-white">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 mx-auto">
+					<h2 align="center">Abstract</h2>
+					<p class="lead">The IEEE SoutheastCon Student Hardware Competition is a yearly robotic design contest. This year’s game is to design an autonomous robot to do at least 1 of 2 tasks, within 3 minutes. The 1st game is to use 10 push buttons that are along one of the walls of the field to type as many digits (0-9) of the number PI (3.14159...) as possible. The 2nd game is to stack Lego Duplo blocks of different colors in order, within the scoring area. There are 10 different block colors distributed around the field and each color represents a different digit (0-9). The goal is to stack as many blocks as possible in the order of PI. Our goal is to compete in the 2nd game in stacking as many blocks as we can. Our robot follows a painted, lined route using infrared sensors and line-following software to reach the Duplo blocks. It then gathers and stacks them as it goes around the field using sonar and infrared sensors. The robot carries the Duplo blocks by having two claws, one on the bottom and one on the top. The claw at the bottom lines up the Duplo blocks so the top claw can pick it up with no problems. Then the top claw moves up and holds the Duplo block in place so it can stack with the new incoming Duplo block. Toward the end of the 3-minute time limit, the robot moves over to the goal to place the stack of Duplo blocks.</p>
+				</div>
+    </section>
+	
+<section id="Projecttimeline">
+      
+</center>
+</br></br></br>
+<section id="Revised Timeline" class="bg-white">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 mx-auto">
+				<h2 align="center">Revised Timeline</h2>
+				<p class="lead">Programming – March 1, 2020​</p>
+				<p class="lead">Functioning claw elevator – 1 week after parts arrive​</p>
+				<p class="lead">Completed CAD – February 23, 2020​</p>
+				<p class="lead">Fully assembled robot – Dependent on 2.​​</p>
+				<p class="lead">Competition – March 12-15, 2020</p>
+					
+			</div>
+		</div>
+	</div>
+</section>
+    		
+	   
+    </ul>
+
+</section>
+
+    <footer class="py-5 bg-dark">
+      <div class="text-center">
+		<img src="pictures/coe_logo.png" alt="COE Logo" width="20%">
+	  </div>
+	  <div class="container">
+        <p class="m-0 text-center text-white">Department of Mechanical Engineering</p>
+		<p class="m-0 text-center text-white">Department of Electrical & Computer Engineering</p>
+        <p class="m-0 text-center text-white"> <br/>Website designed by Isabel Barnola  <br/> Florida State University<br />Tallahassee, Florida - 2020</p>
+        
+      </div>
+    </footer>
+	
+	
+	
+	</body>
+	</html>
+    
