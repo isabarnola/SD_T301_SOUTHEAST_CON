@@ -1,6 +1,0 @@
-{
-    "port": "/dev/cu.usbmodemFD121",
-    "board": "arduino:avr:mega",
-    "configuration": "cpu=atmega2560",
-    "sketch": "MAR_8_test.ino"
-}
