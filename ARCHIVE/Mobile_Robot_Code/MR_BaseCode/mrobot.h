@@ -239,7 +239,7 @@
         {
                 state1 = 2;
                 encoder1_val -=1;
-        }
+             }
           else if ((state1 == 1) && (digitalRead(interruptPIN1) ==1))
           {
               state1 =3;
