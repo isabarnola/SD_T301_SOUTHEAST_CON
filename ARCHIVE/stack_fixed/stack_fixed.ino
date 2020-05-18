@@ -11,7 +11,7 @@ int ir = 5;
 int bopen = 180;
 int bclose = 0;
 int topen = 80;
-int tclose = 110;
+int tclose = 118;
 
 #define dirPin  4 // green wire attached to green
 #define stepPin 5 // yellow wire attached to yellow
@@ -122,17 +122,17 @@ void firstStack()
   Serial.println("closing bottom claw");
   servo_bot.write(bclose);
   
+  delay(1000);
   Serial.println("closing top claw");
-  
   servo_top.write(tclose);
   
   delay(500);
-  
-   Serial.println("actively closing top claw");
+  Serial.println("actively closing top claw");
   servo_top.write(90);
   
-   Serial.println("opening bottom claw");
+  Serial.println("opening bottom claw");
   servo_bot.write(bopen);
+   delay(1000);
   
    Serial.println("going up by 3");
   //myStepper.step(d2s(3,up));
@@ -141,9 +141,9 @@ void firstStack()
   //stepper.setSpeed(400);
  // stepper.runSpeed();
  //Serial.print((d2s(3,up));
- int t = d2s(3,up);
+  int t = d2s(3,up);
    total_s(t,up);
- moveStepper(total_steps,800,up);
+  moveStepper(total_steps,800,up);
   
   stack+=1;
   }
@@ -187,11 +187,12 @@ void bstack()
   //myStepper.step(d2s(pos-stack+1.4,down));
   //stepper.setSpeed(d2s(pos-stack+1.4,down));
   //stepper.runSpeed();
-    int t = d2s(stack,down);
+    int t = d2s(stack +0.7,down);
     total_s(t,down);
    moveStepper(total_steps,speed_stepper,down);
   delay(1500);
 
+/*
   //open top claw
   Serial.print("\n 4 Opening Claw");
   servo_top.write(topen);
@@ -255,6 +256,7 @@ Serial.print("\n 11 Closing top Claw");
   servo_top.write(tclose);
   delay(500);
   servo_top.write(90);
+  */
   
 // open bottom claw
 Serial.print("\n 12 Closing bottom Claw");
@@ -277,7 +279,8 @@ Serial.print("\n 13 Moving top claw Up");
 
 void loop() 
 {
- 
+
+  int i = 0;
  Serial.print("Current position ");
  Serial.println(stepper.currentPosition());
  Serial.print(total_steps);
@@ -289,19 +292,21 @@ void loop()
   // total_s(t,up);
 // moveStepper(total_steps,800,up);
   firstStack();
+   moveStepper(total_steps,800,down);
   //stack++;
  }
+
  
  else if(stack<5)
  {
   bstack();
  }
- else
+ /*else
  {
   lastStack();
  }
  actualStack = actualStack + stack;
  Serial.print("Actual stack: ");
  Serial.println(actualStack);
-
+*/
 }
